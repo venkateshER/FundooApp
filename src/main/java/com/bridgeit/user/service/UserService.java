@@ -18,7 +18,7 @@ import com.bridgeit.user.model.Response;
 import com.bridgeit.user.model.User;
 import com.bridgeit.user.repository.UserRepositoryInterface;
 import com.bridgeit.utility.EmailSenderUtil;
-import com.bridgeit.utility.EncryptUtill;
+import com.bridgeit.utility.EncryptUtil;
 import com.bridgeit.utility.ResponseUtil;
 import com.bridgeit.utility.TokenUtil;
 import com.bridgeit.utility.Utility;
@@ -28,19 +28,19 @@ import com.bridgeit.utility.Utility;
 @PropertySource("classpath:message.properties")
 public class UserService implements UserServiceInterface {
 	@Autowired
-	private UserRepositoryInterface registerRepository;
+	private UserRepositoryInterface userRepository;
 	@Autowired
 	private ModelMapper modelMapper;
 	@Autowired
 	private EmailSenderUtil emailSender;
 	@Autowired
-	private EncryptUtill encryptUtil;
+	private EncryptUtil encryptUtil;
 	@Autowired
 	private Environment env;
 
 	public Response register(UserDto userDto, HttpServletRequest request) {
 
-		boolean isUser = registerRepository.findByEmailId(userDto.getEmailId()).isPresent();
+		boolean isUser = userRepository.findByEmailId(userDto.getEmailId()).isPresent();
 
 		if (isUser) {
 			Response response = ResponseUtil.getResponse(204, "0", env.getProperty("user.exist"));
@@ -52,7 +52,7 @@ public class UserService implements UserServiceInterface {
 			user.setToken(token);
 			user.setRegisterStamp(Utility.todayDate());
 			user.setUpdateStamp(Utility.todayDate());
-			registerRepository.save(user);
+			userRepository.save(user);
 			registerActivationMail(user, request);
 			Response response = ResponseUtil.getResponse(200, token, env.getProperty("user.register.success"));
 			return response;
@@ -62,15 +62,15 @@ public class UserService implements UserServiceInterface {
 
 	@Override
 	public List<User> getAll() {
-		return registerRepository.findAll();
+		return userRepository.findAll();
 	}
 
 	public Response registerActivation(String token) {
 		Long id = TokenUtil.verifyToken(token);
-		User user = registerRepository.findById(id).get();
+		User user = userRepository.findById(id).get();
 		user.setVerified(true);
 		user.setUpdateStamp(Utility.todayDate());
-		registerRepository.save(user);
+		userRepository.save(user);
 		Response response = ResponseUtil.getResponse(200, env.getProperty("user.activate.success"));
 		return response;
 	}
@@ -78,20 +78,20 @@ public class UserService implements UserServiceInterface {
 	public Response forgotPassword(ForgotPasswordDto forgotdto, HttpServletRequest request) {
 
 		String email = forgotdto.getEmailId();
-		boolean isUser = registerRepository.findByEmailId(email).isPresent();
+		boolean isUser = userRepository.findByEmailId(email).isPresent();
 		if (!isUser) {
-			Response response1 = ResponseUtil.getResponse(204,"0", env.getProperty("user.email.incorrect"));
+			Response response1 = ResponseUtil.getResponse(204, "0", env.getProperty("user.email.incorrect"));
 
 			return response1;
 		}
-		User userId = registerRepository.findByEmailId(email).get();
+		User userId = userRepository.findByEmailId(email).get();
 		String token = TokenUtil.generateToken(userId.getUserId());
 		emailSender.mailSender(userId.getEmailId(), env.getProperty("user.email.subject"),
 				"http://localhost:9090/setPassword/" + token);
 		userId.setUpdateStamp(Utility.todayDate());
 		userId.setPassword(forgotdto.getPassword());
 
-		registerRepository.save(userId);
+		userRepository.save(userId);
 
 		Response response1 = ResponseUtil.getResponse(200, token, env.getProperty("user.email.success"));
 
@@ -99,15 +99,14 @@ public class UserService implements UserServiceInterface {
 	}
 
 	public Response login(LoginDto loginDto, HttpServletResponse httpResponse) {
-		
-		boolean isEmail = registerRepository.findByEmailId(loginDto.getEmailId()).isPresent();
-		if(!isEmail)
-		{
-			Response response1 = ResponseUtil.getResponse(204,"0", env.getProperty("user.email.invaild"));
+
+		boolean isEmail = userRepository.findByEmailId(loginDto.getEmailId()).isPresent();
+		if (!isEmail) {
+			Response response1 = ResponseUtil.getResponse(204, "0", env.getProperty("user.email.invaild"));
 			return response1;
 		}
-		
-		User user = registerRepository.findByEmailId(loginDto.getEmailId()).get();
+
+		User user = userRepository.findByEmailId(loginDto.getEmailId()).get();
 		boolean isPassword = encryptUtil.isPassword(loginDto, user);
 
 		if (!(isPassword && user.isVerified())) {
@@ -117,7 +116,7 @@ public class UserService implements UserServiceInterface {
 		String token = TokenUtil.generateToken(user.getUserId());
 		httpResponse.addHeader("token", token);
 		user.setUpdateStamp(Utility.todayDate());
-		registerRepository.save(user);
+		userRepository.save(user);
 		Response response = ResponseUtil.getResponse(200, token, env.getProperty("user.login.success"));
 		return response;
 
@@ -129,25 +128,34 @@ public class UserService implements UserServiceInterface {
 		System.out.println("" + requestUrl);
 		String url = requestUrl.substring(0, requestUrl.lastIndexOf("/")) + "/activation/" + token;
 		System.out.println(url);
-		emailSender.mailSender(user.getEmailId(), env.getProperty("user.email.subject"), url);
+		emailSender.mailSender(user.getEmailId(), env.getProperty("user.email.register"), url);
 	}
 
 	public Response setPassword(SetPasswordDto setPassDto, String token) {
 
 		Long id = TokenUtil.verifyToken(token);
-		User user = registerRepository.findById(id).get();
+		User user = userRepository.findById(id).get();
 		String email = user.getEmailId();
-		boolean isUser = registerRepository.findByEmailId(email).isPresent();
+		boolean isUser = userRepository.findByEmailId(email).isPresent();
 		if (!isUser) {
-			Response response = ResponseUtil.getResponse(204,"0", env.getProperty("user.email.invaild"));
+			Response response = ResponseUtil.getResponse(204, "0", env.getProperty("user.email.invaild"));
 			return response;
 		}
-		User userId = registerRepository.findByEmailId(email).get();
+		User userId = userRepository.findByEmailId(email).get();
 		userId.setPassword(encryptUtil.encryptPassword(setPassDto.getPassword()));
 		userId.setUpdateStamp(Utility.todayDate());
-		registerRepository.save(userId);
+		userRepository.save(userId);
 
 		Response response = ResponseUtil.getResponse(205, token, env.getProperty("user.password.set"));
+		return response;
+
+	}
+
+	public Response delete(String token) {
+		Long id = TokenUtil.verifyToken(token);
+		User user = userRepository.findById(id).get();
+		userRepository.delete(user);
+		Response response = ResponseUtil.getResponse(200, "user.delete.success");
 		return response;
 
 	}

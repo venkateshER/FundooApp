@@ -7,26 +7,26 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 public class UserDto {
-	
+
 	@NotNull
-	@Length(max=12)
+	@Length(max = 12)
 	private String firstName;
-	
+
 	@NotNull
-	@Length(max=12)
+	@Length(max = 12)
 	private String lastName;
-	
+
 	@NotNull
 	@Email
-	@Column(unique=true)
+	@Column(unique = true)
 	private String emailId;
-	
+
 	@NotNull
-	@Length(min=10, max=10)
+	@Length(min = 10, max = 10)
 	private String phoneNumber;
-	
+
 	@NotNull
-	@Length(min=6)
+	@Length(min = 6)
 	private String password;
 
 	public String getFirstName() {
@@ -68,7 +68,11 @@ public class UserDto {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "UserDto [firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId + ", phoneNumber="
+				+ phoneNumber + ", password=" + password + "]";
+	}
 
 }

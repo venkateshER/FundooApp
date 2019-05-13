@@ -1,0 +1,88 @@
+package com.bridgeit.note.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bridgeit.note.dto.NoteDto;
+import com.bridgeit.note.model.Note;
+import com.bridgeit.note.service.NoteService;
+import com.bridgeit.user.model.Response;
+
+import io.swagger.annotations.ResponseHeader;
+
+@RestController
+@RequestMapping("/note")
+public class NoteController {
+
+	@Autowired
+	private NoteService noteService;
+
+	@PostMapping("/create")
+	public ResponseEntity<Response> create(@RequestBody NoteDto noteDto, @RequestHeader String token) {
+		Response response = noteService.create(noteDto, token);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
+
+	@DeleteMapping("/delete")
+	public ResponseEntity<Response> delete(@RequestHeader long id, @RequestHeader String token) {
+		Response response = noteService.delete(id, token);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PutMapping("/update")
+	public ResponseEntity<Response> update(@RequestHeader long id, @RequestBody NoteDto noteDto,
+			@RequestHeader String token) {
+		Response response = noteService.update(id, noteDto, token);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PutMapping("/pin")
+	public ResponseEntity<Response> pin(@RequestHeader String token,@RequestHeader long noteId) {
+		Response response = noteService.pin(token, noteId);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PutMapping("/trash")
+	public ResponseEntity<Response> trash(@RequestHeader String token,@RequestHeader long noteId) {
+		Response response = noteService.trash(token, noteId);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PutMapping("/archive")
+	public ResponseEntity<Response> archive(@RequestHeader String token,@RequestHeader long noteId) {
+		Response response = noteService.archive(token, noteId);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@GetMapping("/getAllNotes")
+	public ResponseEntity<Object> getAllNotes(@RequestHeader String token) {
+		List<Note> notes = noteService.getAllNotes(token);
+		return new ResponseEntity<>(notes, HttpStatus.OK);
+	}
+
+	@PostMapping("/addLabel")
+	public ResponseEntity<Response> addLabel(@RequestHeader long noteId, @RequestHeader String token,
+			@RequestHeader long labelId) {
+		Response response = noteService.addLabels(noteId, token, labelId);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@PostMapping("/removeLabel")
+	public ResponseEntity<Response> removeLabel(@RequestHeader long noteId, @RequestHeader String token,
+			@RequestHeader long labelId) {
+		Response response = noteService.removeLabels(noteId, token, labelId);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+}

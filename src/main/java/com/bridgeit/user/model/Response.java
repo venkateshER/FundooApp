@@ -10,19 +10,6 @@ public class Response {
 
 	}
 
-	public Response(int statusCode, String token, String statusMessage) {
-		super();
-		this.statusCode = statusCode;
-		this.token = token;
-		this.statusMessage = statusMessage;
-	}
-
-	public Response(int statusCode, String token) {
-		super();
-		this.statusCode = statusCode;
-		this.token = token;
-	}
-
 	public int getStatusCode() {
 		return statusCode;
 	}
@@ -46,5 +33,12 @@ public class Response {
 	public void setStatusMessage(String statusMessage) {
 		this.statusMessage = statusMessage;
 	}
+
+	@Override
+	public String toString() {
+		return "Response [statusCode=" + statusCode + ", token=" + token + ", statusMessage=" + statusMessage + "]";
+	}
+
+	
 
 }

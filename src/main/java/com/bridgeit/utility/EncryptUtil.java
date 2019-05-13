@@ -5,12 +5,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.bridgeit.user.dto.LoginDto;
+//import com.bridgeit.user.dto.LoginDto;
 import com.bridgeit.user.model.User;
 
 
 
 @Component
-public class EncryptUtill {
+public class EncryptUtil {
 	@Autowired
 	private PasswordEncoder PasswordEncoder;
 
@@ -20,7 +21,7 @@ public class EncryptUtill {
 
 	public boolean isPassword(LoginDto loginDto, User user) {
 
-		return PasswordEncoder.matches(loginDto.getPassword(), user.getPassword());
+		return PasswordEncoder.matches(loginDto.getPassword(),user.getPassword() );
 		
 	}
 

@@ -72,5 +72,12 @@ public class UserController {
 		List<User> user = userService.getAll();
 		return user;
 	}
+	
+	@DeleteMapping("/delete")
+	public ResponseEntity<Response> delete(@RequestHeader String token)
+	{
+		Response response=userService.delete(token);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
 
 }
