@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,11 +22,10 @@ import com.bridgeit.user.dto.ForgotPasswordDto;
 import com.bridgeit.user.dto.LoginDto;
 import com.bridgeit.user.dto.SetPasswordDto;
 import com.bridgeit.user.dto.UserDto;
-import com.bridgeit.user.model.Response;
+
 import com.bridgeit.user.model.User;
 import com.bridgeit.user.service.UserService;
-
-
+import com.bridgeit.utility.Response;
 
 @RestController
 @RequestMapping("/user")
@@ -54,6 +52,7 @@ public class UserController {
 		Response response = userService.forgotPassword(forgotdto, request);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
+
 	@PutMapping(value = "/setPassword/{token}")
 	public ResponseEntity<Response> resetPassword(@RequestBody SetPasswordDto setPassDto, @PathVariable String token) {
 		Response response = userService.setPassword(setPassDto, token);
@@ -72,12 +71,11 @@ public class UserController {
 		List<User> user = userService.getAll();
 		return user;
 	}
-	
+
 	@DeleteMapping("/delete")
-	public ResponseEntity<Response> delete(@RequestHeader String token)
-	{
-		Response response=userService.delete(token);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+	public ResponseEntity<Response> delete(@RequestHeader String token) {
+		Response response = userService.delete(token);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

@@ -7,12 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import com.bridgeit.label.model.Label;
 import com.bridgeit.note.model.Note;
-import com.bridgeit.user.model.Response;
+
 
 @Repository
-public interface LabelRepositoryInterface extends JpaRepository<Label,Long> {
-	 Optional<Label> findByLabelName(String name) ;
-	 Optional<Label>findByLabelIdAndUserId(long labelId,long userId);
-	//Optional<Note> findByLabelNotes(long LabelId);
-	
+public interface LabelRepositoryInterface extends JpaRepository<Label, Long> {
+	Optional<Label> findByLabelName(String name);
+
+	Optional<Label> findByLabelIdAndUserId(long labelId, long userId);
+	// Optional<Note> findByLabelNotes(long LabelId);
+
 }

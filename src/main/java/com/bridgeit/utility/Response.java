@@ -1,14 +1,12 @@
-package com.bridgeit.user.model;
+package com.bridgeit.utility;
 
 public class Response {
 
-	int statusCode;
-	String token;
-	String statusMessage;
+	private int statusCode;
+	private String token;
+	private String statusMessage;
 
-	public Response() {
 
-	}
 
 	public int getStatusCode() {
 		return statusCode;
@@ -34,11 +32,23 @@ public class Response {
 		this.statusMessage = statusMessage;
 	}
 
+	public Response(int statusCode, String statusMessage) {
+		this.statusCode = statusCode;
+		this.statusMessage = statusMessage;
+	}
+
+	public Response(int statusCode, String token, String statusMessage) {
+		this.statusCode = statusCode;
+		this.token = token;
+		this.statusMessage = statusMessage;
+	}
+
 	@Override
 	public String toString() {
 		return "Response [statusCode=" + statusCode + ", token=" + token + ", statusMessage=" + statusMessage + "]";
 	}
 
-	
 
+
+	
 }

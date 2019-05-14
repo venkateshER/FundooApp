@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bridgeit.note.dto.NoteDto;
 import com.bridgeit.note.model.Note;
 import com.bridgeit.note.service.NoteService;
-import com.bridgeit.user.model.Response;
+import com.bridgeit.utility.Response;
 
 import io.swagger.annotations.ResponseHeader;
 
@@ -63,6 +63,12 @@ public class NoteController {
 	public ResponseEntity<Response> archive(@RequestHeader String token,@RequestHeader long noteId) {
 		Response response = noteService.archive(token, noteId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	@PutMapping("/color")
+	public ResponseEntity<Response>color(@RequestHeader String token, @RequestHeader long noteId,@RequestHeader String color)
+	{
+		Response response=noteService.color(token, noteId, color);
+		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
 	@GetMapping("/getAllNotes")

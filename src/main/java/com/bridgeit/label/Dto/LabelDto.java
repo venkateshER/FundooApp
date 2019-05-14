@@ -1,7 +1,7 @@
 package com.bridgeit.label.Dto;
 
 public class LabelDto {
-	
+
 	private String labelName;
 
 	public String getLabelName() {
@@ -16,8 +16,5 @@ public class LabelDto {
 	public String toString() {
 		return "LabelDto [labelName=" + labelName + "]";
 	}
-
-
-	
 
 }

@@ -36,6 +36,7 @@ public class Note {
 	private String updateTime;
 	private long labelId;
 
+
 	public long getLabelId() {
 		return labelId;
 	}
@@ -143,6 +144,8 @@ public class Note {
 				+ ", createTime=" + createTime + ", updateTime=" + updateTime + ", labelId=" + labelId + ", labelList="
 				+ labelList + "]";
 	}
+
+	
 
 //	//@JoinColumn(name = "userid")
 //	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

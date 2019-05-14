@@ -14,11 +14,12 @@ import com.bridgeit.user.dto.ForgotPasswordDto;
 import com.bridgeit.user.dto.LoginDto;
 import com.bridgeit.user.dto.SetPasswordDto;
 import com.bridgeit.user.dto.UserDto;
-import com.bridgeit.user.model.Response;
+
 import com.bridgeit.user.model.User;
 import com.bridgeit.user.repository.UserRepositoryInterface;
 import com.bridgeit.utility.EmailSenderUtil;
 import com.bridgeit.utility.EncryptUtil;
+import com.bridgeit.utility.Response;
 import com.bridgeit.utility.ResponseUtil;
 import com.bridgeit.utility.TokenUtil;
 import com.bridgeit.utility.Utility;
@@ -38,12 +39,13 @@ public class UserService implements UserServiceInterface {
 	@Autowired
 	private Environment env;
 
+	@Override
 	public Response register(UserDto userDto, HttpServletRequest request) {
 
 		boolean isUser = userRepository.findByEmailId(userDto.getEmailId()).isPresent();
 
 		if (isUser) {
-			Response response = ResponseUtil.getResponse(204, "0", env.getProperty("user.exist"));
+			Response response = ResponseUtil.getResponse(204,env.getProperty("user.exist"));
 			return response;
 		} else {
 			User user = modelMapper.map(userDto, User.class);
@@ -65,6 +67,7 @@ public class UserService implements UserServiceInterface {
 		return userRepository.findAll();
 	}
 
+	@Override
 	public Response registerActivation(String token) {
 		Long id = TokenUtil.verifyToken(token);
 		User user = userRepository.findById(id).get();
@@ -75,13 +78,13 @@ public class UserService implements UserServiceInterface {
 		return response;
 	}
 
+	@Override
 	public Response forgotPassword(ForgotPasswordDto forgotdto, HttpServletRequest request) {
 
 		String email = forgotdto.getEmailId();
 		boolean isUser = userRepository.findByEmailId(email).isPresent();
 		if (!isUser) {
-			Response response1 = ResponseUtil.getResponse(204, "0", env.getProperty("user.email.incorrect"));
-
+			Response response1 = ResponseUtil.getResponse(204,env.getProperty("user.email.incorrect"));
 			return response1;
 		}
 		User userId = userRepository.findByEmailId(email).get();
@@ -98,11 +101,12 @@ public class UserService implements UserServiceInterface {
 		return response1;
 	}
 
+	@Override
 	public Response login(LoginDto loginDto, HttpServletResponse httpResponse) {
 
 		boolean isEmail = userRepository.findByEmailId(loginDto.getEmailId()).isPresent();
 		if (!isEmail) {
-			Response response1 = ResponseUtil.getResponse(204, "0", env.getProperty("user.email.invaild"));
+			Response response1 = ResponseUtil.getResponse(204,env.getProperty("user.email.invaild"));
 			return response1;
 		}
 
@@ -110,7 +114,7 @@ public class UserService implements UserServiceInterface {
 		boolean isPassword = encryptUtil.isPassword(loginDto, user);
 
 		if (!(isPassword && user.isVerified())) {
-			Response response = ResponseUtil.getResponse(204, "0", env.getProperty("user.login.failed"));
+			Response response = ResponseUtil.getResponse(204,env.getProperty("user.login.failed"));
 			return response;
 		}
 		String token = TokenUtil.generateToken(user.getUserId());
@@ -122,7 +126,8 @@ public class UserService implements UserServiceInterface {
 
 	}
 
-	private void registerActivationMail(User user, HttpServletRequest request) {
+	@Override
+	public void registerActivationMail(User user, HttpServletRequest request) {
 		String token = TokenUtil.generateToken(user.getUserId());
 		StringBuffer requestUrl = request.getRequestURL();
 		System.out.println("" + requestUrl);
@@ -131,6 +136,7 @@ public class UserService implements UserServiceInterface {
 		emailSender.mailSender(user.getEmailId(), env.getProperty("user.email.register"), url);
 	}
 
+	@Override
 	public Response setPassword(SetPasswordDto setPassDto, String token) {
 
 		Long id = TokenUtil.verifyToken(token);
@@ -138,7 +144,7 @@ public class UserService implements UserServiceInterface {
 		String email = user.getEmailId();
 		boolean isUser = userRepository.findByEmailId(email).isPresent();
 		if (!isUser) {
-			Response response = ResponseUtil.getResponse(204, "0", env.getProperty("user.email.invaild"));
+			Response response = ResponseUtil.getResponse(204,env.getProperty("user.email.invaild"));
 			return response;
 		}
 		User userId = userRepository.findByEmailId(email).get();
@@ -151,6 +157,7 @@ public class UserService implements UserServiceInterface {
 
 	}
 
+	@Override
 	public Response delete(String token) {
 		Long id = TokenUtil.verifyToken(token);
 		User user = userRepository.findById(id).get();
