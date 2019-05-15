@@ -61,18 +61,27 @@ public class User {
 	@NotNull
 	private String token;
 
-	@JoinColumn(name = "userId")
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade =CascadeType.ALL /*{ CascadeType.PERSIST, CascadeType.REFRESH }*/, fetch = FetchType.LAZY, mappedBy = "noteId")
 	@JsonIgnore
+	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Note> notes;
-
-	@JoinColumn(name = "userId")
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	
+	@OneToMany(cascade =CascadeType.ALL/*{ CascadeType.PERSIST, CascadeType.REFRESH }*/, fetch = FetchType.LAZY, mappedBy = "labelId")
 	@JsonIgnore
-	List<Label> labels;
-
+	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<Label> labels;
+//	
 //	@OneToMany(targetEntity=Label.class,cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 //	private List<Label>labels;
+
+
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
+				+ ", phoneNumber=" + phoneNumber + ", password=" + password + ", registerStamp=" + registerStamp
+				+ ", updateStamp=" + updateStamp + ", isVerified=" + isVerified + ", token=" + token + ", notes="
+				+ notes + ", labels=" + labels + "]";
+	}
 
 	public List<Label> getLabels() {
 		return labels;
@@ -172,30 +181,6 @@ public class User {
 
 	public User() {
 
-	}
-
-	public User(long userId, @NotNull @Length(max = 12) String firstName, @NotNull @Length(max = 12) String lastName,
-			@NotNull @Email String emailId, @NotNull @Length(min = 10, max = 10) String phoneNumber,
-			@NotNull @Length(min = 6) String password, @NotNull String registerStamp, @NotNull String updateStamp,
-			@NotNull boolean isVerified, @NotNull String token) {
-		super();
-		this.userId = userId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.emailId = emailId;
-		this.phoneNumber = phoneNumber;
-		this.password = password;
-		this.registerStamp = registerStamp;
-		this.updateStamp = updateStamp;
-		this.isVerified = isVerified;
-		this.token = token;
-	}
-
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
-				+ ", phoneNumber=" + phoneNumber + ", password=" + password + ", registerStamp=" + registerStamp
-				+ ", updateStamp=" + updateStamp + ", isVerified=" + isVerified + ", token=" + token + "]";
 	}
 
 //	  @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.LAZY, mappedBy ="noteId")

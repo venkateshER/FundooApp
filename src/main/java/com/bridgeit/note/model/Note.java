@@ -25,7 +25,6 @@ public class Note {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long noteId;
-	private long userId;
 	private String title;
 	private String description;
 	private boolean trash;
@@ -34,18 +33,13 @@ public class Note {
 	private String color;
 	private String createTime;
 	private String updateTime;
-	private long labelId;
+	
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "userId")
+	private User user;
 
-
-	public long getLabelId() {
-		return labelId;
-	}
-
-	public void setLabelId(long labelId) {
-		this.labelId = labelId;
-	}
-
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "labelId")
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Label> labelList;
 
@@ -63,14 +57,6 @@ public class Note {
 
 	public void setNoteId(long noteId) {
 		this.noteId = noteId;
-	}
-
-	public long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(long userId) {
-		this.userId = userId;
 	}
 
 	public String getTitle() {
@@ -139,11 +125,16 @@ public class Note {
 
 	@Override
 	public String toString() {
-		return "Note [noteId=" + noteId + ", userId=" + userId + ", title=" + title + ", description=" + description
-				+ ", trash=" + trash + ", archive=" + archive + ", isPin=" + isPin + ", color=" + color
-				+ ", createTime=" + createTime + ", updateTime=" + updateTime + ", labelId=" + labelId + ", labelList="
-				+ labelList + "]";
+		return "Note [noteId=" + noteId + ", title=" + title + ", description=" + description + ", trash=" + trash
+				+ ", archive=" + archive + ", isPin=" + isPin + ", color=" + color + ", createTime=" + createTime
+				+ ", updateTime=" + updateTime + ", user=" + user + ", labelList=" + labelList + "]";
 	}
+
+
+	
+	
+
+
 
 	
 

@@ -10,8 +10,8 @@ import com.bridgeit.user.model.User;
 
 @Repository
 public interface NoteRepositoryInterface extends JpaRepository<Note, Long> {
-	Optional<Note> findByNoteIdAndUserId(long noteId, long userId);
-
+	//Optional<Note> findByNoteIdAndUserId(long noteId, long userId);
+	Optional<Note> findByNoteIdAndUser(long noteId,User user);
 	Optional<User> findByNoteId(long noteId);
 
 	// Optional<Note> findByNoteIdAndUser(long noteId,long userId);

@@ -9,37 +9,48 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.bridgeit.note.model.Note;
+import com.bridgeit.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-//@Table(name="label")
+@Table(name = "label")
 public class Label {
 
 	private String labelName;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long labelId;
-	private long userId;
 	private String createStamp;
 	private String updateStamp;
-	private long noteId;
 
-	public long getNoteId() {
-		return noteId;
-	}
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "userId")
+	private User user;
 
-	public void setNoteId(long noteId) {
-		this.noteId = noteId;
-	}
-
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "noteId")
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Note> noteList;
+
+	@Override
+	public String toString() {
+		return "Label [labelName=" + labelName + ", labelId=" + labelId + ", createStamp=" + createStamp
+				+ ", updateStamp=" + updateStamp + ", user=" + user + ", noteList=" + noteList + "]";
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public List<Note> getNoteList() {
 		return noteList;
@@ -65,14 +76,6 @@ public class Label {
 		this.labelId = labelId;
 	}
 
-	public long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(long userId) {
-		this.userId = userId;
-	}
-
 	public String getCreateStamp() {
 		return createStamp;
 	}
@@ -87,12 +90,6 @@ public class Label {
 
 	public void setUpdateStamp(String updateStamp) {
 		this.updateStamp = updateStamp;
-	}
-
-	@Override
-	public String toString() {
-		return "Label [labelName=" + labelName + ", labelId=" + labelId + ", userId=" + userId + ", createStamp="
-				+ createStamp + ", updateStamp=" + updateStamp + "]";
 	}
 
 }
