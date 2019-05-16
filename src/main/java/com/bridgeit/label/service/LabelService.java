@@ -54,9 +54,11 @@ public class LabelService implements LabelServiceInterface {
 			label.setUpdateStamp(Utility.todayDate());
 			label.setCreateStamp(Utility.todayDate());
 			User user = userRepository.findById(id).get();
+			label.setUser(user);
 			user.getLabels().add(label);
+			//labelRepository.save(label);
 			userRepository.save(user);
-			// labelRepository.save(label);
+			
 
 			Response response = ResponseUtil.getResponse(200, token, "label completed");
 			return response;
@@ -64,17 +66,20 @@ public class LabelService implements LabelServiceInterface {
 	}
 
 	@Override
-	public Response delete(long id, String token) {
+	public Response delete(long labelId, String token) {
 		long uid = TokenUtil.verifyToken(token);
 		User user=userRepository.findById(uid).get();
-		boolean isLabel = labelRepository.findByLabelIdAndUser(id, user).isPresent();
+		boolean isLabel = labelRepository.findByLabelIdAndUser(labelId, user).isPresent();
 		if (!isLabel) {
 			Response response = ResponseUtil.getResponse(204, "0", "not found");
 			return response;
 		} else {
 
-			Label label = labelRepository.findById(id).get();
-			labelRepository.delete(label);
+			//Label label = labelRepository.findById(labelId).get();
+			//labelRepository.delete(label);
+//			user.getLabels().remove(label);
+//			userRepository.delete(user);
+			labelRepository.deleteById(labelId);
 			Response response = ResponseUtil.getResponse(204, "0", "Label deleted");
 			return response;
 
@@ -97,8 +102,9 @@ public class LabelService implements LabelServiceInterface {
 		label.setUpdateStamp(Utility.todayDate());
 		//User user = userRepository.findById(id).get();
 		user.getLabels().add(label);
+		//labelRepository.save(label);
 		userRepository.save(user);
-		// labelRepository.save(label);
+	
 		Response response = ResponseUtil.getResponse(200, "0", "update Success");
 		return response;
 
@@ -110,13 +116,13 @@ public class LabelService implements LabelServiceInterface {
 		boolean isUser = userRepository.findById(uid).isPresent();
 		User user=userRepository.findById(uid).get();
 		boolean isLabel = labelRepository.findByLabelIdAndUser(labelId, user).isPresent();
-		Note note=noteRepository.findById(noteId).get();
+		Label label=labelRepository.findById(labelId).get();
 		boolean isNote = noteRepository.findByNoteIdAndUser(noteId,user).isPresent();
 		if (!(isUser && isNote && isLabel)) {
 			Response response = ResponseUtil.getResponse(204, "0", "not found");
 			return response;
 		} else {
-			Label label = labelRepository.findByLabelIdAndUser(labelId, user).get();
+			Note note=noteRepository.findById(noteId).get();
 			label.setUpdateStamp(Utility.todayDate());
 			note.getLabelList().add(label);
 			labelRepository.save(label);
@@ -142,8 +148,8 @@ public class LabelService implements LabelServiceInterface {
 		//Note note = noteRepository.findByNoteIdAndUserId(noteId, uid).get();
 		label.setUpdateStamp(Utility.todayDate());
 		note.getLabelList().remove(label);
-		labelRepository.delete(label);
-		noteRepository.delete(note);
+		labelRepository.save(label);
+		noteRepository.save(note);
 		Response response = ResponseUtil.getResponse(200, "0", "removed Success");
 		return response;
 	}

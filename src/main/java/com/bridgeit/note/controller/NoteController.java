@@ -84,7 +84,7 @@ public class NoteController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PostMapping("/removeLabel")
+	@DeleteMapping("/removeLabel")
 	public ResponseEntity<Response> removeLabel(@RequestHeader long noteId, @RequestHeader String token,
 			@RequestHeader long labelId) {
 		Response response = noteService.removeLabels(noteId, token, labelId);

@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Target;
 import org.hibernate.validator.constraints.Length;
 
 import com.bridgeit.label.model.Label;
@@ -60,27 +61,33 @@ public class User {
 
 	@NotNull
 	private String token;
+	
+	private String image;
 
-	@OneToMany(cascade =CascadeType.ALL /*{ CascadeType.PERSIST, CascadeType.REFRESH }*/, fetch = FetchType.LAZY, mappedBy = "noteId")
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	@OneToMany(cascade =CascadeType.ALL, fetch = FetchType.LAZY,mappedBy="user")
+	//@JoinColumn
 	@JsonIgnore
-	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Note> notes;
 	
-	@OneToMany(cascade =CascadeType.ALL/*{ CascadeType.PERSIST, CascadeType.REFRESH }*/, fetch = FetchType.LAZY, mappedBy = "labelId")
+	@OneToMany(cascade =CascadeType.ALL, fetch = FetchType.LAZY,mappedBy="user")
+	//@JoinColumn
 	@JsonIgnore
-	//@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<Label> labels;
-//	
-//	@OneToMany(targetEntity=Label.class,cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-//	private List<Label>labels;
 
+	public List<Note> getNotes() {
+		return notes;
+	}
 
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
-				+ ", phoneNumber=" + phoneNumber + ", password=" + password + ", registerStamp=" + registerStamp
-				+ ", updateStamp=" + updateStamp + ", isVerified=" + isVerified + ", token=" + token + ", notes="
-				+ notes + ", labels=" + labels + "]";
+	public void setNotes(List<Note> notes) {
+		this.notes = notes;
 	}
 
 	public List<Label> getLabels() {
@@ -89,14 +96,6 @@ public class User {
 
 	public void setLabels(List<Label> labels) {
 		this.labels = labels;
-	}
-
-	public List<Note> getNotes() {
-		return notes;
-	}
-
-	public void setNotes(List<Note> notes) {
-		this.notes = notes;
 	}
 
 	public long getUserId() {
@@ -183,20 +182,12 @@ public class User {
 
 	}
 
-//	  @OneToMany(cascade = {CascadeType.PERSIST,CascadeType.REFRESH}, fetch = FetchType.LAZY, mappedBy ="noteId")
-//	  @JsonIgnore
-//	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-//	  private List<Note> notes;
-//	
-
-//	  public List<Note> getNotes() {
-//		return notes;
-//	}
-//
-//
-//
-//	public void setNotes(List<Note> notes) {
-//		this.notes = notes;
-//	}
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
+				+ ", phoneNumber=" + phoneNumber + ", password=" + password + ", registerStamp=" + registerStamp
+				+ ", updateStamp=" + updateStamp + ", isVerified=" + isVerified + ", token=" + token + ", notes="
+				+ notes + ", labels=" + labels + "]";
+	}
 
 }

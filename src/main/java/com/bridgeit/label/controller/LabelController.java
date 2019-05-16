@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +18,6 @@ import com.bridgeit.label.Dto.LabelDto;
 import com.bridgeit.label.model.Label;
 import com.bridgeit.label.service.LabelService;
 import com.bridgeit.utility.Response;
-
 
 @RequestMapping("/label")
 @RestController
@@ -36,8 +34,8 @@ public class LabelController {
 	}
 
 	@DeleteMapping("/delete")
-	ResponseEntity<Response> delete(@RequestHeader long id, @RequestHeader String token) {
-		Response response = labelService.delete(id, token);
+	ResponseEntity<Response> delete(@RequestHeader long labelId, @RequestHeader String token) {
+		Response response = labelService.delete(labelId, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -61,7 +59,7 @@ public class LabelController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PostMapping("/removeNotes")
+	@DeleteMapping("/removeNotes")
 	ResponseEntity<Response> removeNotes(@RequestHeader long noteId, @RequestHeader String token,
 			@RequestHeader long labelId) {
 		Response response = labelService.removeNotes(noteId, token, labelId);

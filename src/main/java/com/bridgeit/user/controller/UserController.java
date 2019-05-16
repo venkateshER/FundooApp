@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.bridgeit.user.dto.ForgotPasswordDto;
 import com.bridgeit.user.dto.LoginDto;
@@ -24,6 +26,7 @@ import com.bridgeit.user.dto.SetPasswordDto;
 import com.bridgeit.user.dto.UserDto;
 
 import com.bridgeit.user.model.User;
+import com.bridgeit.user.service.AmazonClient;
 import com.bridgeit.user.service.UserService;
 import com.bridgeit.utility.Response;
 
@@ -77,5 +80,27 @@ public class UserController {
 		Response response = userService.delete(token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
+	
+	
+	private AmazonClient amazonClient;
+
+	@Autowired
+    public UserController(AmazonClient amazonClient) {
+		this.amazonClient = amazonClient;
+	}
+
+	@PostMapping("/uploadFile")
+    public String uploadFile(@RequestPart(value = "file") MultipartFile file) {
+        return this.amazonClient.uploadFile(file);
+    }
+
+    @DeleteMapping("/deleteFile")
+    public String deleteFile(@RequestPart(value = "url") String fileUrl) {
+        return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
+    }
+	
+	
+	
+	
 
 }

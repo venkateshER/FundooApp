@@ -12,14 +12,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.bridgeit.label.model.Label;
 import com.bridgeit.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "note")
+//@Table(name = "note")
 public class Note {
 
 	@Id
@@ -34,14 +36,30 @@ public class Note {
 	private String createTime;
 	private String updateTime;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "userId")
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
-
-	@JoinColumn(name = "labelId")
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	
+	//@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,mappedBy="noteList")
+//	@OnDelete(action = OnDeleteAction.CASCADE)
+//	@JoinColumn(nullable = false)
+//	@JsonIgnore
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name="labelId")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private List<Label> labelList;
+
+	
+	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 	public List<Label> getLabelList() {
 		return labelList;
@@ -130,13 +148,6 @@ public class Note {
 				+ ", updateTime=" + updateTime + ", user=" + user + ", labelList=" + labelList + "]";
 	}
 
-
-	
-	
-
-
-
-	
 
 //	//@JoinColumn(name = "userid")
 //	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

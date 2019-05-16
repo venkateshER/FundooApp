@@ -10,9 +10,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.bridgeit.note.model.Note;
 import com.bridgeit.user.model.User;
@@ -29,12 +33,15 @@ public class Label {
 	private String createStamp;
 	private String updateStamp;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "userId")
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
-	@JoinColumn(name = "noteId")
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name="noteId")
+	//@JoinColumn(name="noteId")
 	@JsonIgnore
 	private List<Note> noteList;
 
