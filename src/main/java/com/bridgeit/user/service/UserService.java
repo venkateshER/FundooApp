@@ -45,7 +45,7 @@ public class UserService implements UserServiceInterface {
 		boolean isUser = userRepository.findByEmailId(userDto.getEmailId()).isPresent();
 
 		if (isUser) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("user.exist"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("user.exist"));
 			return response;
 		} else {
 			User user = modelMapper.map(userDto, User.class);
@@ -84,7 +84,7 @@ public class UserService implements UserServiceInterface {
 		String email = forgotdto.getEmailId();
 		boolean isUser = userRepository.findByEmailId(email).isPresent();
 		if (!isUser) {
-			Response response1 = ResponseUtil.getResponse(204,env.getProperty("user.email.incorrect"));
+			Response response1 = ResponseUtil.getResponse(204, env.getProperty("user.email.incorrect"));
 			return response1;
 		}
 		User userId = userRepository.findByEmailId(email).get();
@@ -106,7 +106,7 @@ public class UserService implements UserServiceInterface {
 
 		boolean isEmail = userRepository.findByEmailId(loginDto.getEmailId()).isPresent();
 		if (!isEmail) {
-			Response response1 = ResponseUtil.getResponse(204,env.getProperty("user.email.invaild"));
+			Response response1 = ResponseUtil.getResponse(204, env.getProperty("user.email.invaild"));
 			return response1;
 		}
 
@@ -114,7 +114,7 @@ public class UserService implements UserServiceInterface {
 		boolean isPassword = encryptUtil.isPassword(loginDto, user);
 
 		if (!(isPassword && user.isVerified())) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("user.login.failed"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("user.login.failed"));
 			return response;
 		}
 		String token = TokenUtil.generateToken(user.getUserId());
@@ -144,7 +144,7 @@ public class UserService implements UserServiceInterface {
 		String email = user.getEmailId();
 		boolean isUser = userRepository.findByEmailId(email).isPresent();
 		if (!isUser) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("user.email.invaild"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("user.email.invaild"));
 			return response;
 		}
 		User userId = userRepository.findByEmailId(email).get();

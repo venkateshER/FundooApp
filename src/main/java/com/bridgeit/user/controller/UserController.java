@@ -37,6 +37,9 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private AmazonClient amazonClient;
+
 	@PostMapping("/register")
 	public ResponseEntity<Response> userRegister(@RequestBody UserDto user, HttpServletRequest request) {
 		Response response = userService.register(user, request);
@@ -80,27 +83,24 @@ public class UserController {
 		Response response = userService.delete(token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-	
-	
-	private AmazonClient amazonClient;
 
-	@Autowired
-    public UserController(AmazonClient amazonClient) {
-		this.amazonClient = amazonClient;
-	}
+//	public UserController(AmazonClient amazonClient) {
+//		this.amazonClient = amazonClient;
+//	}
 
 	@PostMapping("/uploadFile")
-    public String uploadFile(@RequestPart(value = "file") MultipartFile file) {
-        return this.amazonClient.uploadFile(file);
-    }
+	public ResponseEntity<Response> uploadFile(@RequestPart(value = "file") MultipartFile file, String token) {
+		// return this.amazonClient.uploadFile(file, token);
+		Response response = amazonClient.uploadFile(file, token);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
-    @DeleteMapping("/deleteFile")
-    public String deleteFile(@RequestPart(value = "url") String fileUrl) {
-        return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
-    }
-	
-	
-	
-	
+	}
+
+	@DeleteMapping("/deleteFile")
+	public ResponseEntity<Response> deleteFile(@RequestHeader String fileName, @RequestHeader String token) {
+		// return this.amazonClient.deleteFileFromS3Bucket(fileName,token);
+		Response response = amazonClient.deleteFileFromS3Bucket(fileName, token);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 
 }
