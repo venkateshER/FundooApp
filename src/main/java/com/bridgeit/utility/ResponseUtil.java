@@ -11,12 +11,5 @@ public class ResponseUtil {
 		response.setStatusMessage(statusMessage);
 		return response;
 	}
-	public static Response getResponse(int statusCode,String token ,String statusMessage) {
-		Response response = new Response(statusCode, statusMessage, statusMessage);
-		response.setStatusCode(statusCode);
-		response.setToken(token);
-		response.setStatusMessage(statusMessage);
-		return response;
-	}
 	
 }

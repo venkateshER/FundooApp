@@ -11,22 +11,23 @@ import com.bridgeit.user.dto.SetPasswordDto;
 import com.bridgeit.user.dto.UserDto;
 
 import com.bridgeit.user.model.User;
-import com.bridgeit.utility.Response;
+import com.bridgeit.user.model.UserResponse;
+
 
 public interface UserServiceInterface {
 	public List<User> getAll();
 
-	public Response register(UserDto userDto, HttpServletRequest request);
+	public UserResponse register(UserDto userDto, HttpServletRequest request);
 
-	public Response forgotPassword(ForgotPasswordDto forgotdto, HttpServletRequest request);
+	public UserResponse forgotPassword(ForgotPasswordDto forgotdto, HttpServletRequest request);
 
-	public Response login(LoginDto loginDto, HttpServletResponse httpResponse);
+	public UserResponse login(LoginDto loginDto, HttpServletResponse httpResponse);
 
-	public Response setPassword(SetPasswordDto setPassDto, String token);
+	public UserResponse setPassword(SetPasswordDto setPassDto, String token);
 
-	public Response delete(String token);
+	public UserResponse delete(String token);
 
-	public Response registerActivation(String token);
+	public UserResponse registerActivation(String token);
 
 	public void registerActivationMail(User user, HttpServletRequest request);
 

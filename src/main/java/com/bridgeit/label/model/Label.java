@@ -1,6 +1,7 @@
 package com.bridgeit.label.model;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,10 +39,9 @@ public class Label {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name = "note_label", joinColumns = @JoinColumn(name = "label_id", referencedColumnName = "labelId"), inverseJoinColumns = @JoinColumn(name = "note_id", referencedColumnName = "noteId"))
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinColumn(name="noteId")
-	//@JoinColumn(name="noteId")
 	@JsonIgnore
 	private List<Note> noteList;
 

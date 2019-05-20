@@ -2,7 +2,6 @@ package com.bridgeit.note.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,7 +17,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.bridgeit.label.model.Label;
 import com.bridgeit.user.model.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 //@Table(name = "note")
@@ -35,24 +34,28 @@ public class Note {
 	private String color;
 	private String createTime;
 	private String updateTime;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
-	
-	//@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,mappedBy="noteList")
-//	@OnDelete(action = OnDeleteAction.CASCADE)
-//	@JoinColumn(nullable = false)
-//	@JsonIgnore
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name="labelId")
+
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "noteList")
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JsonIgnore
 	private List<Label> labelList;
 
-	
-	
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "NoteCollaborator", joinColumns = @JoinColumn(name = "note_id", referencedColumnName = "noteId"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"))
+	private List<User> collaborator;
+
+	public List<User> getCollaborator() {
+		return collaborator;
+	}
+
+	public void setCollaborator(List<User> collaborator) {
+		this.collaborator = collaborator;
+	}
+
 	public User getUser() {
 		return user;
 	}
@@ -145,19 +148,8 @@ public class Note {
 	public String toString() {
 		return "Note [noteId=" + noteId + ", title=" + title + ", description=" + description + ", trash=" + trash
 				+ ", archive=" + archive + ", isPin=" + isPin + ", color=" + color + ", createTime=" + createTime
-				+ ", updateTime=" + updateTime + ", user=" + user + ", labelList=" + labelList + "]";
+				+ ", updateTime=" + updateTime + ", user=" + user + ", labelList=" + labelList + ", collaborator="
+				+ collaborator + "]";
 	}
-
-
-//	//@JoinColumn(name = "userid")
-//	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//	private User user;
-
-//	public User getUser() {
-//		return user;
-//	}
-//	public void setUser(User user) {
-//		this.user = user;
-//	}
 
 }

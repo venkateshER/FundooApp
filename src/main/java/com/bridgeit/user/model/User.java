@@ -1,7 +1,7 @@
 package com.bridgeit.user.model;
 
 import java.util.List;
-import java.util.Set;
+
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,12 +10,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Target;
 import org.hibernate.validator.constraints.Length;
 
 import com.bridgeit.label.model.Label;
@@ -61,7 +60,7 @@ public class User {
 
 	@NotNull
 	private String token;
-	
+
 	private String image;
 
 	public String getImage() {
@@ -72,15 +71,25 @@ public class User {
 		this.image = image;
 	}
 
-	@OneToMany(cascade =CascadeType.ALL, fetch = FetchType.LAZY,mappedBy="user")
-	//@JoinColumn
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
 	@JsonIgnore
 	private List<Note> notes;
-	
-	@OneToMany(cascade =CascadeType.ALL, fetch = FetchType.LAZY,mappedBy="user")
-	//@JoinColumn
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
 	@JsonIgnore
 	private List<Label> labels;
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collaborator")
+	@JsonIgnore
+	private List<Note> collaboNotes;
+
+	public List<Note> getCollaboNotes() {
+		return collaboNotes;
+	}
+
+	public void setCollaboNotes(List<Note> collaboNotes) {
+		this.collaboNotes = collaboNotes;
+	}
 
 	public List<Note> getNotes() {
 		return notes;
@@ -186,8 +195,8 @@ public class User {
 	public String toString() {
 		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
 				+ ", phoneNumber=" + phoneNumber + ", password=" + password + ", registerStamp=" + registerStamp
-				+ ", updateStamp=" + updateStamp + ", isVerified=" + isVerified + ", token=" + token + ", notes="
-				+ notes + ", labels=" + labels + "]";
+				+ ", updateStamp=" + updateStamp + ", isVerified=" + isVerified + ", token=" + token + ", image="
+				+ image + ", notes=" + notes + ", labels=" + labels + ", collaboNotes=" + collaboNotes + "]";
 	}
 
 }

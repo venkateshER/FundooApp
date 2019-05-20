@@ -90,5 +90,18 @@ public class NoteController {
 		Response response = noteService.removeLabels(noteId, token, labelId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
+	
+	@PutMapping("/addCollaborator")
+	public ResponseEntity<Response> addCollaborator(@RequestHeader long noteId,@RequestHeader String token,@RequestHeader String emailId)
+	{
+		Response response=noteService.addCollaborator(noteId, token, emailId);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	@DeleteMapping("/removeCollaborator")
+	public ResponseEntity<Response> removeCollaborator(@RequestHeader long noteId,@RequestHeader String token,@RequestHeader String emailId)
+	{
+		Response response=noteService.removeCollaborator(noteId, token, emailId);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
 
 }
