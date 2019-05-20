@@ -1,7 +1,7 @@
 package com.bridgeit.label.controller;
 
-import java.util.List;
 
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,11 +48,11 @@ public class LabelController {
 
 	@GetMapping("/getAllLabels")
 	ResponseEntity<Object> getLabels(@RequestHeader String token) {
-		List<Label> labels = labelService.getAllLabels(token);
+		Set<Label> labels = labelService.getAllLabels(token);
 		return new ResponseEntity<>(labels, HttpStatus.OK);
 	}
 
-	@PostMapping("/addNotes")
+	@PutMapping("/addNotes")
 	ResponseEntity<Response> addNotes(@RequestHeader long noteId, @RequestHeader String token,
 			@RequestHeader long labelId) {
 		Response response = labelService.addNotes(noteId, token, labelId);

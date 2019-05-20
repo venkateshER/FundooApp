@@ -1,6 +1,7 @@
 package com.bridgeit.note.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,7 +78,7 @@ public class NoteController {
 		return new ResponseEntity<>(notes, HttpStatus.OK);
 	}
 
-	@PostMapping("/addLabel")
+	@PutMapping("/addLabel")
 	public ResponseEntity<Response> addLabel(@RequestHeader long noteId, @RequestHeader String token,
 			@RequestHeader long labelId) {
 		Response response = noteService.addLabels(noteId, token, labelId);

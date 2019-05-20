@@ -1,6 +1,7 @@
 package com.bridgeit.label.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.bridgeit.label.Dto.LabelDto;
 import com.bridgeit.label.model.Label;
@@ -19,6 +20,6 @@ public interface LabelServiceInterface {
 
 	public Response removeNotes(long noteId, String token, long labelId);
 
-	public List<Label> getAllLabels(String token);
+	public Set<Label> getAllLabels(String token);
 
 }

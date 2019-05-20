@@ -2,6 +2,7 @@ package com.bridgeit.note.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -37,7 +38,7 @@ public class NoteService implements NoteServiceInterface {
 	@Autowired
 	private NoteRepositoryInterface noteRepository;
 	@Autowired
-	private LabelRepositoryInterface labelRespository;
+	private LabelRepositoryInterface labelRepository;
 	@Autowired
 	private ModelMapper modelMapper;
 	@Autowired
@@ -49,16 +50,14 @@ public class NoteService implements NoteServiceInterface {
 	public Response create(NoteDto noteDto, String token) {
 
 		long userid = TokenUtil.verifyToken(token);
-		boolean isuser = userRepository.findById(userid).isPresent();//.orElseThrow(()->new NoteException( env.getProperty("user.notfound")));
-			//User user = userRepository.findById(userid).get();
-		if(!isuser)
-		{
-			Response response = ResponseUtil.getResponse(204,env.getProperty("user.notfound"));
+		boolean isuser = userRepository.findById(userid).isPresent();// .orElseThrow(()->new NoteException(
+																		// env.getProperty("user.notfound")));
+		// User user = userRepository.findById(userid).get();
+		if (!isuser) {
+			Response response = ResponseUtil.getResponse(204, env.getProperty("user.notfound"));
 			return response;
-		}
-		else
-		{
-			User user=userRepository.findById(userid).get();
+		} else {
+			User user = userRepository.findById(userid).get();
 			Note note = modelMapper.map(noteDto, Note.class);
 			note.setCreateTime(Utility.todayDate());
 			note.setUpdateTime(Utility.todayDate());
@@ -69,7 +68,7 @@ public class NoteService implements NoteServiceInterface {
 			note.setUser(user);
 			user.getNotes().add(note);
 			userRepository.save(user);
-			Response response = ResponseUtil.getResponse(200,env.getProperty("note.create.success"));
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.create.success"));
 			return response;
 		}
 	}
@@ -83,12 +82,12 @@ public class NoteService implements NoteServiceInterface {
 		boolean isNote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
 
 		if (!isNote) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.notfound"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		}
 		note.setTrash(true);
 		noteRepository.delete(note);
-		Response response = ResponseUtil.getResponse(200,env.getProperty("note.delete.success"));
+		Response response = ResponseUtil.getResponse(200, env.getProperty("note.delete.success"));
 		return response;
 	}
 
@@ -100,7 +99,7 @@ public class NoteService implements NoteServiceInterface {
 		boolean isNote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
 
 		if (!isNote) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.delete.success"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.delete.success"));
 			return response;
 		}
 		note.setUpdateTime(Utility.todayDate());
@@ -109,7 +108,7 @@ public class NoteService implements NoteServiceInterface {
 		user.getNotes().add(note);
 		noteRepository.save(note);
 		userRepository.save(user);
-		Response response = ResponseUtil.getResponse(200,env.getProperty("note.update.success"));
+		Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 		return response;
 	}
 
@@ -120,7 +119,7 @@ public class NoteService implements NoteServiceInterface {
 		boolean isuser = userRepository.findById(userId).isPresent();
 		boolean isnote = noteRepository.findById(noteId).isPresent();
 		if (!isnote && !isuser) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.notfound"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		}
 		Note note = noteRepository.findById(noteId).get();
@@ -130,13 +129,13 @@ public class NoteService implements NoteServiceInterface {
 			note.setPin(true);
 			noteRepository.save(note);
 			userRepository.save(user);
-			Response response = ResponseUtil.getResponse(200,env.getProperty("note.pin"));
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.pin"));
 			return response;
 		} else {
 			note.setPin(false);
 			noteRepository.save(note);
 			userRepository.save(user);
-			Response response = ResponseUtil.getResponse(200,env.getProperty("note.unpin"));
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.unpin"));
 			return response;
 		}
 	}
@@ -147,7 +146,7 @@ public class NoteService implements NoteServiceInterface {
 		boolean isuser = userRepository.findById(userId).isPresent();
 		boolean isnote = noteRepository.findById(noteId).isPresent();
 		if (!isnote && !isuser) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.notfound"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		}
 		Note note = noteRepository.findById(noteId).get();
@@ -157,7 +156,7 @@ public class NoteService implements NoteServiceInterface {
 		User user = userRepository.findById(userId).get();
 		noteRepository.save(note);
 		userRepository.save(user);
-		Response response = ResponseUtil.getResponse(200,env.getProperty("note.update.success"));
+		Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 		return response;
 	}
 
@@ -167,7 +166,7 @@ public class NoteService implements NoteServiceInterface {
 		boolean isuser = userRepository.findById(userId).isPresent();
 		boolean isnote = noteRepository.findById(noteId).isPresent();
 		if (!isnote && !isuser) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.notfound"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		}
 		Note note = noteRepository.findById(noteId).get();
@@ -177,13 +176,13 @@ public class NoteService implements NoteServiceInterface {
 			note.setTrash(true);
 			noteRepository.save(note);
 			userRepository.save(user);
-			Response response = ResponseUtil.getResponse(200,env.getProperty("note.trash"));
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.trash"));
 			return response;
 		} else {
 			note.setTrash(false);
 			noteRepository.save(note);
 			userRepository.save(user);
-			Response response = ResponseUtil.getResponse(200,env.getProperty("note.untrash"));
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.untrash"));
 			return response;
 		}
 	}
@@ -195,7 +194,7 @@ public class NoteService implements NoteServiceInterface {
 		boolean isnote = noteRepository.findById(noteId).isPresent();
 
 		if (!isnote && !isuser) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.notfound"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		}
 		Note note = noteRepository.findById(noteId).get();
@@ -205,13 +204,13 @@ public class NoteService implements NoteServiceInterface {
 			note.setArchive(true);
 			noteRepository.save(note);
 			userRepository.save(user);
-			Response response = ResponseUtil.getResponse(200,env.getProperty("note.archive"));
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.archive"));
 			return response;
 		} else {
 			note.setArchive(false);
 			noteRepository.save(note);
 			userRepository.save(user);
-			Response response = ResponseUtil.getResponse(200,env.getProperty("note.unarchive"));
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.unarchive"));
 			return response;
 		}
 	}
@@ -224,99 +223,91 @@ public class NoteService implements NoteServiceInterface {
 		return listNotes;
 
 	}
-	
-	public Response addCollaborator(long noteId,String token,String emailId)
-	{
-		long uid=TokenUtil.verifyToken(token);
-		User user=userRepository.findById(uid).get();
-		boolean isuser=userRepository.findById(uid).isPresent();
-		boolean isEmailId=userRepository.findByEmailId(emailId).isPresent();
-		boolean isnote=noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
-		if(!(isuser && isEmailId && isnote))
-		{
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.notfound"));
+
+	public Response addCollaborator(long noteId, String token, String emailId) {
+		long uid = TokenUtil.verifyToken(token);
+		User user = userRepository.findById(uid).get();
+		boolean isuser = userRepository.findById(uid).isPresent();
+		boolean isEmailId = userRepository.findByEmailId(emailId).isPresent();
+		boolean isnote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
+		if (!(isuser && isEmailId && isnote)) {
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
-		}
-		Note note=noteRepository.findByNoteIdAndUser(noteId, user).get();
-		note.setUpdateTime(Utility.todayDate());
-		note.getCollaborator().add(user);
-		user.getCollaboNotes().add(note);
-		userRepository.save(user);
-		emailSender.mailSender(emailId,"Collobarator","collobarator Success");
-		//noteRepository.save(note);
-		Response response = ResponseUtil.getResponse(200,env.getProperty("note.update.success"));
-		return response;
-	}
-	public Response removeCollaborator(long noteId,String token,String emailId)
-	{
-		long uid=TokenUtil.verifyToken(token);
-		User user=userRepository.findById(uid).get();
-		boolean isuser=userRepository.findById(uid).isPresent();
-		boolean isEmailId=userRepository.findByEmailId(emailId).isPresent();
-		boolean isnote=noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
-		if(!(isuser && isEmailId && isnote))
-		{
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.notfound"));
+		} else {
+			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
+			note.setUpdateTime(Utility.todayDate());
+			note.getCollaborator().add(user);
+			noteRepository.save(note);
+			emailSender.mailSender(emailId, "Collobarator", "collobarator Success");
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 			return response;
+
 		}
-		Note note=noteRepository.findByNoteIdAndUser(noteId, user).get();
-		note.setUpdateTime(Utility.todayDate());
-		//note.getCollaborator().add(user);
-		user.getCollaboNotes().remove(note);
-		userRepository.save(user);
-		//noteRepository.save(note);
-		Response response = ResponseUtil.getResponse(200,env.getProperty("note.remove.collaborator"));
-		return response;
 	}
-	
-	
-	
+
+	public Response removeCollaborator(long noteId, String token, String emailId) {
+		long uid = TokenUtil.verifyToken(token);
+		User user = userRepository.findById(uid).get();
+		boolean isuser = userRepository.findById(uid).isPresent();
+		boolean isEmailId = userRepository.findByEmailId(emailId).isPresent();
+		boolean isnote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
+		if (!(isuser && isEmailId && isnote)) {
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
+			return response;
+		} else {
+			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
+			note.setUpdateTime(Utility.todayDate());
+			note.getCollaborator().remove(user);
+			noteRepository.save(note);
+			Response response = ResponseUtil.getResponse(200,"removed Successfully");
+			return response;
+
+		}
+	}
 
 	@Override
 	public Response addLabels(long noteId, String token, long labelId) {
-		long uId = TokenUtil.verifyToken(token);
-		boolean isUser = userRepository.findById(uId).isPresent();
-		User user = userRepository.findById(uId).get();
-		Note note = noteRepository.findById(noteId).get();
-	
-		boolean isNote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
-		boolean isLabel = labelRespository.findByLabelIdAndUser(labelId, user).isPresent();
-		if (!(isUser && isLabel && isNote)) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.notfound"));
+		long uid = TokenUtil.verifyToken(token);
+		User user = userRepository.findById(uid).get();
+		boolean isuser = userRepository.findById(uid).isPresent();
+		boolean isnote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
+		boolean isLabel = labelRepository.findByLabelIdAndUser(labelId, user).isPresent();
+		if (!(isuser && isLabel && isnote)) {
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		} else {
-			Label label = labelRespository.findById(labelId).get();
+			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
+			Label label = labelRepository.findByLabelIdAndUser(labelId, user).get();
 			note.setUpdateTime(Utility.todayDate());
 			note.getLabelList().add(label);
 			label.getNoteList().add(note);
 			noteRepository.save(note);
-			labelRespository.save(label);
+			labelRepository.save(label);
 
-			Response response = ResponseUtil.getResponse(200,env.getProperty("note.update.success"));
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 			return response;
 		}
 	}
 
 	@Override
 	public Response removeLabels(long noteId, String token, long labelId) {
-		long uId = TokenUtil.verifyToken(token);
-
-		boolean isUser = userRepository.findById(uId).isPresent();
-		User user = userRepository.findById(uId).get();
-		boolean isNote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
-		boolean isLabel = labelRespository.findByLabelIdAndUser(labelId, user).isPresent();
-		if (!(isUser && isLabel && isNote)) {
-			Response response = ResponseUtil.getResponse(204,env.getProperty("note.notfound"));
+		long uid = TokenUtil.verifyToken(token);
+		User user = userRepository.findById(uid).get();
+		boolean isuser = userRepository.findById(uid).isPresent();
+		boolean isnote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
+		boolean isLabel = labelRepository.findByLabelIdAndUser(labelId, user).isPresent();
+		if (!(isuser && isLabel && isnote)) {
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		} else {
-			Note note = noteRepository.findById(noteId).get();
-			Label label = labelRespository.findById(labelId).get();
+			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
+			Label label = labelRepository.findByLabelIdAndUser(labelId, user).get();
 			note.setUpdateTime(Utility.todayDate());
 			note.getLabelList().remove(label);
 			label.getNoteList().remove(note);
 			noteRepository.save(note);
-			labelRespository.save(label);
-			Response response = ResponseUtil.getResponse(200,env.getProperty("note.remove.labels"));
+			labelRepository.save(label);
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.remove.labels"));
 			return response;
 		}
 

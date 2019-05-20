@@ -1,7 +1,7 @@
 package com.bridgeit.user.model;
 
 import java.util.List;
-
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -77,34 +77,26 @@ public class User {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
 	@JsonIgnore
-	private List<Label> labels;
+	private Set<Label> labels;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collaborator")
 	@JsonIgnore
-	private List<Note> collaboNotes;
+	private Set<Note> collaboNotes;
 
-	public List<Note> getCollaboNotes() {
-		return collaboNotes;
-	}
-
-	public void setCollaboNotes(List<Note> collaboNotes) {
-		this.collaboNotes = collaboNotes;
-	}
-
-	public List<Note> getNotes() {
-		return notes;
-	}
-
-	public void setNotes(List<Note> notes) {
-		this.notes = notes;
-	}
-
-	public List<Label> getLabels() {
+	public Set<Label> getLabels() {
 		return labels;
 	}
 
-	public void setLabels(List<Label> labels) {
+	public void setLabels(Set<Label> labels) {
 		this.labels = labels;
+	}
+
+	public Set<Note> getCollaboNotes() {
+		return collaboNotes;
+	}
+
+	public void setCollaboNotes(Set<Note> collaboNotes) {
+		this.collaboNotes = collaboNotes;
 	}
 
 	public long getUserId() {
@@ -187,8 +179,12 @@ public class User {
 		this.token = token;
 	}
 
-	public User() {
+	public List<Note> getNotes() {
+		return notes;
+	}
 
+	public void setNotes(List<Note> notes) {
+		this.notes = notes;
 	}
 
 	@Override
@@ -198,5 +194,5 @@ public class User {
 				+ ", updateStamp=" + updateStamp + ", isVerified=" + isVerified + ", token=" + token + ", image="
 				+ image + ", notes=" + notes + ", labels=" + labels + ", collaboNotes=" + collaboNotes + "]";
 	}
-
+	
 }

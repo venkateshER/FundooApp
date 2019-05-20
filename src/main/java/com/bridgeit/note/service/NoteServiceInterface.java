@@ -1,6 +1,7 @@
 package com.bridgeit.note.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.bridgeit.note.dto.NoteDto;
 import com.bridgeit.note.model.Note;

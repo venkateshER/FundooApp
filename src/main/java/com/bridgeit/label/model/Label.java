@@ -1,10 +1,9 @@
 package com.bridgeit.label.model;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -43,12 +42,14 @@ public class Label {
 	@JoinTable(name = "note_label", joinColumns = @JoinColumn(name = "label_id", referencedColumnName = "labelId"), inverseJoinColumns = @JoinColumn(name = "note_id", referencedColumnName = "noteId"))
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
-	private List<Note> noteList;
+	private Set<Note> noteList;
 
-	@Override
-	public String toString() {
-		return "Label [labelName=" + labelName + ", labelId=" + labelId + ", createStamp=" + createStamp
-				+ ", updateStamp=" + updateStamp + ", user=" + user + ", noteList=" + noteList + "]";
+	public Set<Note> getNoteList() {
+		return noteList;
+	}
+
+	public void setNoteList(Set<Note> noteList) {
+		this.noteList = noteList;
 	}
 
 	public User getUser() {
@@ -57,14 +58,6 @@ public class Label {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public List<Note> getNoteList() {
-		return noteList;
-	}
-
-	public void setNoteList(List<Note> noteList) {
-		this.noteList = noteList;
 	}
 
 	public String getLabelName() {
@@ -97,6 +90,12 @@ public class Label {
 
 	public void setUpdateStamp(String updateStamp) {
 		this.updateStamp = updateStamp;
+	}
+
+	@Override
+	public String toString() {
+		return "Label [labelName=" + labelName + ", labelId=" + labelId + ", createStamp=" + createStamp
+				+ ", updateStamp=" + updateStamp + ", user=" + user + ", noteList=" + noteList + "]";
 	}
 
 }

@@ -2,6 +2,7 @@ package com.bridgeit.label.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,17 +100,17 @@ public class LabelService implements LabelServiceInterface {
 
 	@Override
 	public Response addNotes(long noteId, String token, long labelId) {
-		long uId = TokenUtil.verifyToken(token);
-		boolean isUser = userRepository.findById(uId).isPresent();
-		User user = userRepository.findById(uId).get();
-		Note note = noteRepository.findById(noteId).get();
-		boolean isNote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
+		long uid = TokenUtil.verifyToken(token);
+		User user = userRepository.findById(uid).get();
+		boolean isuser = userRepository.findById(uid).isPresent();
+		boolean isnote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
 		boolean isLabel = labelRepository.findByLabelIdAndUser(labelId, user).isPresent();
-		if (!(isUser && isLabel && isNote)) {
+		if (!(isuser && isLabel && isnote)) {
 			Response response = ResponseUtil.getResponse(204,env.getProperty("label.notfound"));
 			return response;
 		} else {
-			Label label = labelRepository.findById(labelId).get();
+			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
+			Label label = labelRepository.findByLabelIdAndUser(labelId, user).get();
 			label.setUpdateStamp(Utility.todayDate());// setUpdateTime(Utility.todayDate());
 			note.getLabelList().add(label);
 			label.getNoteList().add(note);
@@ -124,15 +125,15 @@ public class LabelService implements LabelServiceInterface {
 	@Override
 	public Response removeNotes(long noteId, String token, long labelId) {
 		long uid = TokenUtil.verifyToken(token);
-		boolean isUser = userRepository.findById(uid).isPresent();
 		User user = userRepository.findById(uid).get();
+		boolean isuser = userRepository.findById(uid).isPresent();
+		boolean isnote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
 		boolean isLabel = labelRepository.findByLabelIdAndUser(labelId, user).isPresent();
-		Note note = noteRepository.findById(noteId).get();
-		boolean isNote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
-		if (!(isUser && isNote && isLabel)) {
+		if (!(isuser && isLabel && isnote)) {
 			Response response = ResponseUtil.getResponse(204,env.getProperty("label.notfound"));
 			return response;
 		}
+		Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
 		Label label = labelRepository.findByLabelIdAndUser(labelId, user).get();
 		label.setUpdateStamp(Utility.todayDate());
 		label.getNoteList().remove(note);
@@ -144,10 +145,10 @@ public class LabelService implements LabelServiceInterface {
 	}
 
 	@Override
-	public List<Label> getAllLabels(String token) {
+	public Set<Label> getAllLabels(String token) {
 		long uid = TokenUtil.verifyToken(token);
 		User user = userRepository.findById(uid).get();
-		List<Label> listLabels = user.getLabels();
+		Set<Label> listLabels = user.getLabels();
 		return listLabels;
 
 	}

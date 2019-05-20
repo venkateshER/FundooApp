@@ -14,6 +14,7 @@ public interface NoteRepositoryInterface extends JpaRepository<Note, Long> {
 	Optional<Note> findByNoteIdAndUser(long noteId,User user);
 	Optional<User> findByNoteId(long noteId);
 	Optional<Note> findByNoteIdAndLabelList(long noteId,long labelId);
+	Optional<Note> findByCollaboratorAndUser(long noteId,User user);
 	// Optional<Note> findByNoteIdAndUser(long noteId,long userId);
 	// List<Note>findByUserId(long id);
 }

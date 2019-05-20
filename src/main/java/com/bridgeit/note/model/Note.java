@@ -1,6 +1,6 @@
 package com.bridgeit.note.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +17,6 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.bridgeit.label.model.Label;
 import com.bridgeit.user.model.User;
-
 
 @Entity
 //@Table(name = "note")
@@ -42,17 +41,25 @@ public class Note {
 
 	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "noteList")
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	private List<Label> labelList;
+	private Set<Label> labelList;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "NoteCollaborator", joinColumns = @JoinColumn(name = "note_id", referencedColumnName = "noteId"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"))
-	private List<User> collaborator;
+	private Set<User> collaborator;
 
-	public List<User> getCollaborator() {
+	public Set<Label> getLabelList() {
+		return labelList;
+	}
+
+	public void setLabelList(Set<Label> labelList) {
+		this.labelList = labelList;
+	}
+
+	public Set<User> getCollaborator() {
 		return collaborator;
 	}
 
-	public void setCollaborator(List<User> collaborator) {
+	public void setCollaborator(Set<User> collaborator) {
 		this.collaborator = collaborator;
 	}
 
@@ -62,14 +69,6 @@ public class Note {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public List<Label> getLabelList() {
-		return labelList;
-	}
-
-	public void setLabelList(List<Label> labelList) {
-		this.labelList = labelList;
 	}
 
 	public long getNoteId() {
