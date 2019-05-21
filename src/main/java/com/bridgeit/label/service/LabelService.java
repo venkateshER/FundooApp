@@ -40,7 +40,8 @@ public class LabelService implements LabelServiceInterface {
 	public Response create(LabelDto labelDto, String token) {
 		long id = TokenUtil.verifyToken(token);
 		boolean isuser = userRepository.findById(id).isPresent();//.orElseThrow(() -> new UserException(env.getProperty("user.not.match")));
-		boolean islabel = labelRepository.findByLabelName(labelDto.getLabelName()).isPresent();
+		User user=userRepository.findById(id).get();
+		boolean islabel = labelRepository.findByLabelNameAndUser(labelDto.getLabelName(), user).isPresent();
 		if (islabel) {
 			Response response = ResponseUtil.getResponse(204,env.getProperty("label.exist"));
 			return response;
@@ -52,7 +53,7 @@ public class LabelService implements LabelServiceInterface {
 			return response;
 		}
 		else {
-			User user=userRepository.findById(id).get();
+			
 			Label label = modelMapper.map(labelDto, Label.class);
 			label.setUpdateStamp(Utility.todayDate());
 			label.setCreateStamp(Utility.todayDate());

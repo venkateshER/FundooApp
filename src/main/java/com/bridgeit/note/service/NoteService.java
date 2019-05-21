@@ -51,9 +51,7 @@ public class NoteService implements NoteServiceInterface {
 	public Response create(NoteDto noteDto, String token) {
 
 		long userid = TokenUtil.verifyToken(token);
-		boolean isuser = userRepository.findById(userid).isPresent();// .orElseThrow(()->new NoteException(
-																		// env.getProperty("user.notfound")));
-		// User user = userRepository.findById(userid).get();
+		boolean isuser = userRepository.findById(userid).isPresent();
 		if (!isuser) {
 			Response response = ResponseUtil.getResponse(204, env.getProperty("user.notfound"));
 			return response;
@@ -96,21 +94,21 @@ public class NoteService implements NoteServiceInterface {
 	public Response update(long noteId, NoteDto noteDto, String token) {
 		Long userId = TokenUtil.verifyToken(token);
 		User user = userRepository.findById(userId).get();
-		Note note = noteRepository.findById(noteId).get();
-		boolean isNote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
 
+		boolean isNote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
 		if (!isNote) {
-			Response response = ResponseUtil.getResponse(204, env.getProperty("note.delete.success"));
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
+			return response;
+		} else {
+			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
+			note.setUpdateTime(Utility.todayDate());
+			note.setTitle(noteDto.getTitle());
+			note.setDescription(noteDto.getDescription());
+			user.getNotes().add(note);
+			noteRepository.save(note);
+			Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 			return response;
 		}
-		note.setUpdateTime(Utility.todayDate());
-		note.setTitle(noteDto.getTitle());
-		note.setDescription(noteDto.getDescription());
-		user.getNotes().add(note);
-		noteRepository.save(note);
-		// userRepository.save(user);
-		Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
-		return response;
 	}
 
 	@Override
@@ -124,18 +122,15 @@ public class NoteService implements NoteServiceInterface {
 			return response;
 		}
 		Note note = noteRepository.findById(noteId).get();
-		// User user = userRepository.findById(userId).get();
 		if (note.isPin() == false) {
 			note.setUpdateTime(Utility.todayDate());
 			note.setPin(true);
 			noteRepository.save(note);
-			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.pin"));
 			return response;
 		} else {
 			note.setPin(false);
 			noteRepository.save(note);
-			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.unpin"));
 			return response;
 		}
@@ -154,9 +149,8 @@ public class NoteService implements NoteServiceInterface {
 
 		note.setUpdateTime(Utility.todayDate());
 		note.setColor(color);
-		User user = userRepository.findById(userId).get();
+		// User user = userRepository.findById(userId).get();
 		noteRepository.save(note);
-		// userRepository.save(user);
 		Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 		return response;
 	}
@@ -171,18 +165,15 @@ public class NoteService implements NoteServiceInterface {
 			return response;
 		}
 		Note note = noteRepository.findById(noteId).get();
-		// User user = userRepository.findById(userId).get();
 		if (note.isTrash() == false) {
 			note.setUpdateTime(Utility.todayDate());
 			note.setTrash(true);
 			noteRepository.save(note);
-			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.trash"));
 			return response;
 		} else {
 			note.setTrash(false);
 			noteRepository.save(note);
-			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.untrash"));
 			return response;
 		}
@@ -203,13 +194,11 @@ public class NoteService implements NoteServiceInterface {
 			note.setUpdateTime(Utility.todayDate());
 			note.setArchive(true);
 			noteRepository.save(note);
-			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.archive"));
 			return response;
 		} else {
 			note.setArchive(false);
 			noteRepository.save(note);
-			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.unarchive"));
 			return response;
 		}
@@ -265,10 +254,10 @@ public class NoteService implements NoteServiceInterface {
 						.findFirst().get();
 				userCol.remove(findNote);
 				noteRepository.save(note);
-				Response response = ResponseUtil.getResponse(200, "removed Successfully");
+				Response response = ResponseUtil.getResponse(200, env.getProperty("note.remove.collaborator"));
 				return response;
 			} else {
-				Response response = ResponseUtil.getResponse(200, "removed UnSuccessfully");
+				Response response = ResponseUtil.getResponse(200, env.getProperty("note.unSuccess"));
 				return response;
 			}
 		}
