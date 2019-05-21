@@ -1,6 +1,5 @@
 package com.bridgeit.label.controller;
 
-
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,17 +51,17 @@ public class LabelController {
 		return new ResponseEntity<>(labels, HttpStatus.OK);
 	}
 
-	@PutMapping("/addNotes")
-	ResponseEntity<Response> addNotes(@RequestHeader long noteId, @RequestHeader String token,
-			@RequestHeader long labelId) {
-		Response response = labelService.addNotes(noteId, token, labelId);
-		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
-
-	@DeleteMapping("/removeNotes")
-	ResponseEntity<Response> removeNotes(@RequestHeader long noteId, @RequestHeader String token,
-			@RequestHeader long labelId) {
-		Response response = labelService.removeNotes(noteId, token, labelId);
-		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
+//	@PutMapping("/addNotes")
+//	ResponseEntity<Response> addNotes(@RequestHeader long noteId, @RequestHeader String token,
+//			@RequestHeader long labelId) {
+//		Response response = labelService.addNotes(noteId, token, labelId);
+//		return new ResponseEntity<>(response, HttpStatus.OK);
+//	}
+//
+//	@DeleteMapping("/removeNotes")
+//	ResponseEntity<Response> removeNotes(@RequestHeader long noteId, @RequestHeader String token,
+//			@RequestHeader long labelId) {
+//		Response response = labelService.removeNotes(noteId, token, labelId);
+//		return new ResponseEntity<>(response, HttpStatus.OK);
+//	}
 }

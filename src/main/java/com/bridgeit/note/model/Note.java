@@ -2,6 +2,7 @@ package com.bridgeit.note.model;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,20 +40,21 @@ public class Note {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "noteList")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Set<Label> labelList;
+	@ManyToMany(fetch=FetchType.LAZY,cascade= {CascadeType.PERSIST,CascadeType.MERGE})
+	@JoinTable(name="note_label",joinColumns= {@JoinColumn(name="note_id")},inverseJoinColumns= {@JoinColumn(name="label_id")})
+	private Set<Label> labels;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "NoteCollaborator", joinColumns = @JoinColumn(name = "note_id", referencedColumnName = "noteId"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"))
 	private Set<User> collaborator;
 
-	public Set<Label> getLabelList() {
-		return labelList;
+	
+	public Set<Label> getLabels() {
+		return labels;
 	}
 
-	public void setLabelList(Set<Label> labelList) {
-		this.labelList = labelList;
+	public void setLabels(Set<Label> labels) {
+		this.labels = labels;
 	}
 
 	public Set<User> getCollaborator() {
@@ -147,8 +149,9 @@ public class Note {
 	public String toString() {
 		return "Note [noteId=" + noteId + ", title=" + title + ", description=" + description + ", trash=" + trash
 				+ ", archive=" + archive + ", isPin=" + isPin + ", color=" + color + ", createTime=" + createTime
-				+ ", updateTime=" + updateTime + ", user=" + user + ", labelList=" + labelList + ", collaborator="
+				+ ", updateTime=" + updateTime + ", user=" + user + ", labels=" + labels + ", collaborator="
 				+ collaborator + "]";
 	}
+	
 
 }

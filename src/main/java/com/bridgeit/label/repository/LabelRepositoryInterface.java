@@ -18,5 +18,4 @@ public interface LabelRepositoryInterface extends JpaRepository<Label, Long> {
 	// Optional<Note> findByLabelNotes(long LabelId);
 	Optional<Label>findByLabelIdAndUser(long labelId,User user);
 	Optional<Note>findByLabelName(String labelName);
-	Optional<Label>findByLabelIdAndNoteList(long labelId,long noteId);
 }

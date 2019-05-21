@@ -1,5 +1,6 @@
 package com.bridgeit.note.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -107,7 +108,7 @@ public class NoteService implements NoteServiceInterface {
 		note.setDescription(noteDto.getDescription());
 		user.getNotes().add(note);
 		noteRepository.save(note);
-		userRepository.save(user);
+		// userRepository.save(user);
 		Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 		return response;
 	}
@@ -123,18 +124,18 @@ public class NoteService implements NoteServiceInterface {
 			return response;
 		}
 		Note note = noteRepository.findById(noteId).get();
-		User user = userRepository.findById(userId).get();
+		// User user = userRepository.findById(userId).get();
 		if (note.isPin() == false) {
 			note.setUpdateTime(Utility.todayDate());
 			note.setPin(true);
 			noteRepository.save(note);
-			userRepository.save(user);
+			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.pin"));
 			return response;
 		} else {
 			note.setPin(false);
 			noteRepository.save(note);
-			userRepository.save(user);
+			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.unpin"));
 			return response;
 		}
@@ -155,7 +156,7 @@ public class NoteService implements NoteServiceInterface {
 		note.setColor(color);
 		User user = userRepository.findById(userId).get();
 		noteRepository.save(note);
-		userRepository.save(user);
+		// userRepository.save(user);
 		Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 		return response;
 	}
@@ -170,18 +171,18 @@ public class NoteService implements NoteServiceInterface {
 			return response;
 		}
 		Note note = noteRepository.findById(noteId).get();
-		User user = userRepository.findById(userId).get();
+		// User user = userRepository.findById(userId).get();
 		if (note.isTrash() == false) {
 			note.setUpdateTime(Utility.todayDate());
 			note.setTrash(true);
 			noteRepository.save(note);
-			userRepository.save(user);
+			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.trash"));
 			return response;
 		} else {
 			note.setTrash(false);
 			noteRepository.save(note);
-			userRepository.save(user);
+			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.untrash"));
 			return response;
 		}
@@ -198,18 +199,17 @@ public class NoteService implements NoteServiceInterface {
 			return response;
 		}
 		Note note = noteRepository.findById(noteId).get();
-		User user = userRepository.findById(userId).get();
 		if (note.isArchive() == false) {
 			note.setUpdateTime(Utility.todayDate());
 			note.setArchive(true);
 			noteRepository.save(note);
-			userRepository.save(user);
+			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.archive"));
 			return response;
 		} else {
 			note.setArchive(false);
 			noteRepository.save(note);
-			userRepository.save(user);
+			// userRepository.save(user);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.unarchive"));
 			return response;
 		}
@@ -257,11 +257,20 @@ public class NoteService implements NoteServiceInterface {
 		} else {
 			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
 			note.setUpdateTime(Utility.todayDate());
-			note.getCollaborator().remove(user);
-			noteRepository.save(note);
-			Response response = ResponseUtil.getResponse(200,"removed Successfully");
-			return response;
-
+			Set<User> userCol = new HashSet<User>();
+			userCol = note.getCollaborator();
+			if (userCol.stream().filter(u -> u.getEmailId().equals(note.getUser().getEmailId())).findFirst()
+					.isPresent()) {
+				User findNote = userCol.stream().filter(u -> u.getEmailId().equals(note.getUser().getEmailId()))
+						.findFirst().get();
+				userCol.remove(findNote);
+				noteRepository.save(note);
+				Response response = ResponseUtil.getResponse(200, "removed Successfully");
+				return response;
+			} else {
+				Response response = ResponseUtil.getResponse(200, "removed UnSuccessfully");
+				return response;
+			}
 		}
 	}
 
@@ -278,14 +287,18 @@ public class NoteService implements NoteServiceInterface {
 		} else {
 			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
 			Label label = labelRepository.findByLabelIdAndUser(labelId, user).get();
-			note.setUpdateTime(Utility.todayDate());
-			note.getLabelList().add(label);
-			label.getNoteList().add(note);
-			noteRepository.save(note);
-			labelRepository.save(label);
+			Set<Label> setLabel = new HashSet<Label>();
+			setLabel = note.getLabels();
+			if (setLabel.stream().filter(l -> l.getLabelId() == label.getLabelId()).findFirst().isPresent()) {
+				Response response = ResponseUtil.getResponse(202, "Duplicate label name");
+				return response;
 
-			Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
-			return response;
+			} else {
+				setLabel.add(label);
+				noteRepository.save(note);
+				Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
+				return response;
+			}
 		}
 	}
 
@@ -303,12 +316,18 @@ public class NoteService implements NoteServiceInterface {
 			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
 			Label label = labelRepository.findByLabelIdAndUser(labelId, user).get();
 			note.setUpdateTime(Utility.todayDate());
-			note.getLabelList().remove(label);
-			label.getNoteList().remove(note);
-			noteRepository.save(note);
-			labelRepository.save(label);
-			Response response = ResponseUtil.getResponse(200, env.getProperty("note.remove.labels"));
-			return response;
+			Set<Label> setLabel = new HashSet<Label>();
+			setLabel = note.getLabels();
+			if (setLabel.stream().filter(l -> l.getLabelId() == label.getLabelId()).findFirst().isPresent()) {
+				Label findLabel = setLabel.stream().filter(l -> l.getLabelId() == label.getLabelId()).findFirst().get();
+				setLabel.remove(findLabel);
+				noteRepository.save(note);
+				Response response = ResponseUtil.getResponse(200, env.getProperty("note.remove.labels"));
+				return response;
+			} else {
+				Response response = ResponseUtil.getResponse(201, "error");
+				return response;
+			}
 		}
 
 	}

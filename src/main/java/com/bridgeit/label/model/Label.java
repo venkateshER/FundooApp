@@ -38,18 +38,17 @@ public class Label {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "note_label", joinColumns = @JoinColumn(name = "label_id", referencedColumnName = "labelId"), inverseJoinColumns = @JoinColumn(name = "note_id", referencedColumnName = "noteId"))
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},mappedBy = "labels")
+	@OnDelete(action=OnDeleteAction.CASCADE) 
 	@JsonIgnore
-	private Set<Note> noteList;
-
-	public Set<Note> getNoteList() {
-		return noteList;
+	private Set<Note> notes;
+	
+	public Set<Note> getNotes() {
+		return notes;
 	}
 
-	public void setNoteList(Set<Note> noteList) {
-		this.noteList = noteList;
+	public void setNotes(Set<Note> notes) {
+		this.notes = notes;
 	}
 
 	public User getUser() {
@@ -95,7 +94,8 @@ public class Label {
 	@Override
 	public String toString() {
 		return "Label [labelName=" + labelName + ", labelId=" + labelId + ", createStamp=" + createStamp
-				+ ", updateStamp=" + updateStamp + ", user=" + user + ", noteList=" + noteList + "]";
+				+ ", updateStamp=" + updateStamp + ", user=" + user + ", notes=" + notes + "]";
 	}
+
 
 }

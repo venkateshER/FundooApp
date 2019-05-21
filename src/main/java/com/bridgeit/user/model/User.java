@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Length;
 
 import com.bridgeit.label.model.Label;
@@ -72,14 +74,17 @@ public class User {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private List<Note> notes;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private Set<Label> labels;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collaborator")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
 	private Set<Note> collaboNotes;
 
