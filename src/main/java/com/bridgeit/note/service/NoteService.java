@@ -1,5 +1,6 @@
 package com.bridgeit.note.service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -225,18 +226,28 @@ public class NoteService implements NoteServiceInterface {
 		} else {
 			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
 			note.setUpdateTime(Utility.todayDate());
-			note.getCollaborator().add(user);
-			noteRepository.save(note);
-			emailSender.mailSender(emailId, "Collobarator", "collobarator Success");
-			Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
-			return response;
+			List<User> userCol = new ArrayList<User>();
+			userCol = note.getCollaborator();
+			if (userCol.stream().filter(u -> u.getEmailId().equals(note.getUser().getEmailId())).findFirst()
+					.isPresent()) {
+				Response response = ResponseUtil.getResponse(200, env.getProperty("note.unSuccess"));
+				return response;
 
+			} else {
+				User userEmail = userRepository.findByEmailId(emailId).get();
+				userCol.add(userEmail);
+				emailSender.mailSender(emailId, "Collobarator", "collobarator Success");
+				noteRepository.save(note);
+				Response response = ResponseUtil.getResponse(200, "Collaborator");
+				return response;
+			}
 		}
 	}
 
 	public Response removeCollaborator(long noteId, String token, String emailId) {
 		long uid = TokenUtil.verifyToken(token);
 		User user = userRepository.findById(uid).get();
+		//User userEmail=userRepository.findByEmailId(emailId).get();
 		boolean isuser = userRepository.findById(uid).isPresent();
 		boolean isEmailId = userRepository.findByEmailId(emailId).isPresent();
 		boolean isnote = noteRepository.findByNoteIdAndUser(noteId, user).isPresent();
@@ -246,7 +257,7 @@ public class NoteService implements NoteServiceInterface {
 		} else {
 			Note note = noteRepository.findByNoteIdAndUser(noteId, user).get();
 			note.setUpdateTime(Utility.todayDate());
-			Set<User> userCol = new HashSet<User>();
+			List<User> userCol = new ArrayList<User>();
 			userCol = note.getCollaborator();
 			if (userCol.stream().filter(u -> u.getEmailId().equals(note.getUser().getEmailId())).findFirst()
 					.isPresent()) {

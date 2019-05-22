@@ -1,5 +1,6 @@
 package com.bridgeit.note.model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -46,7 +47,7 @@ public class Note {
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "NoteCollaborator", joinColumns = @JoinColumn(name = "note_id", referencedColumnName = "noteId"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"))
-	private Set<User> collaborator;
+	private List<User> collaborator;
 
 	
 	public Set<Label> getLabels() {
@@ -57,11 +58,11 @@ public class Note {
 		this.labels = labels;
 	}
 
-	public Set<User> getCollaborator() {
+	public List<User> getCollaborator() {
 		return collaborator;
 	}
 
-	public void setCollaborator(Set<User> collaborator) {
+	public void setCollaborator(List<User> collaborator) {
 		this.collaborator = collaborator;
 	}
 

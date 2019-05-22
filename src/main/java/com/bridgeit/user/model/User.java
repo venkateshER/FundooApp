@@ -86,22 +86,22 @@ public class User {
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collaborator")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JsonIgnore
-	private Set<Note> collaboNotes;
+	private List<Note> collaboNotes;
 
 	public Set<Label> getLabels() {
 		return labels;
 	}
 
-	public void setLabels(Set<Label> labels) {
-		this.labels = labels;
-	}
-
-	public Set<Note> getCollaboNotes() {
+	public List<Note> getCollaboNotes() {
 		return collaboNotes;
 	}
 
-	public void setCollaboNotes(Set<Note> collaboNotes) {
+	public void setCollaboNotes(List<Note> collaboNotes) {
 		this.collaboNotes = collaboNotes;
+	}
+
+	public void setLabels(Set<Label> labels) {
+		this.labels = labels;
 	}
 
 	public long getUserId() {
