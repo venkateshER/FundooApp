@@ -90,11 +90,11 @@ public class UserService implements UserServiceInterface {
 		User userId = userRepository.findByEmailId(email).get();
 		String token = TokenUtil.generateToken(userId.getUserId());
 		emailSender.mailSender(userId.getEmailId(), env.getProperty("user.email.subject"),
-				"http://localhost:9090/setPassword/" + token);
+				"http://localhost:4200/setPassword/" + token);
 		userId.setUpdateStamp(Utility.todayDate());
-		userId.setPassword(forgotdto.getPassword());
-
-		userRepository.save(userId);
+//		userId.setPassword(forgotdto.getPassword());
+//
+//		userRepository.save(userId);
 
 		UserResponse response1 = UserResponseUtil.getResponse(200, token, env.getProperty("user.email.success"));
 
@@ -152,7 +152,7 @@ public class UserService implements UserServiceInterface {
 		userId.setUpdateStamp(Utility.todayDate());
 		userRepository.save(userId);
 
-		UserResponse response = UserResponseUtil.getResponse(205, token, env.getProperty("user.password.set"));
+		UserResponse response = UserResponseUtil.getResponse(200, token, env.getProperty("user.password.set"));
 		return response;
 
 	}

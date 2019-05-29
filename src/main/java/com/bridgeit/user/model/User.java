@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
@@ -73,31 +74,21 @@ public class User {
 		this.image = image;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JsonIgnore
+	@JoinColumn(name = "userId")
+	@OneToMany(targetEntity = Note.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Note> notes;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JoinColumn(name = "userId")
+	@OneToMany(targetEntity = Label.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private Set<Label> labels;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collaborator")
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "collaboratedUsers")
 	@JsonIgnore
-	private List<Note> collaboNotes;
+	private List<Note> collaboratedNotes;
 
 	public Set<Label> getLabels() {
 		return labels;
-	}
-
-	public List<Note> getCollaboNotes() {
-		return collaboNotes;
-	}
-
-	public void setCollaboNotes(List<Note> collaboNotes) {
-		this.collaboNotes = collaboNotes;
 	}
 
 	public void setLabels(Set<Label> labels) {
@@ -192,12 +183,20 @@ public class User {
 		this.notes = notes;
 	}
 
+	public List<Note> getCollaboratedNotes() {
+		return collaboratedNotes;
+	}
+
+	public void setCollaboratedNotes(List<Note> collaboratedNotes) {
+		this.collaboratedNotes = collaboratedNotes;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
 				+ ", phoneNumber=" + phoneNumber + ", password=" + password + ", registerStamp=" + registerStamp
 				+ ", updateStamp=" + updateStamp + ", isVerified=" + isVerified + ", token=" + token + ", image="
-				+ image + ", notes=" + notes + ", labels=" + labels + ", collaboNotes=" + collaboNotes + "]";
+				+ image + ", notes=" + notes + ", labels=" + labels + ", collaboratedNotes=" + collaboratedNotes + "]";
 	}
-	
+
 }

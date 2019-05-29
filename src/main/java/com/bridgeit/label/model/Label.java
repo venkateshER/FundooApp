@@ -32,11 +32,7 @@ public class Label {
 	private long labelId;
 	private String createStamp;
 	private String updateStamp;
-
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-	@JoinColumn(nullable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private User user;
+	private long userId;
 
 	@ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},mappedBy = "labels")
 	@OnDelete(action=OnDeleteAction.CASCADE) 
@@ -49,14 +45,6 @@ public class Label {
 
 	public void setNotes(Set<Note> notes) {
 		this.notes = notes;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public String getLabelName() {
@@ -91,11 +79,20 @@ public class Label {
 		this.updateStamp = updateStamp;
 	}
 
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
 	@Override
 	public String toString() {
 		return "Label [labelName=" + labelName + ", labelId=" + labelId + ", createStamp=" + createStamp
-				+ ", updateStamp=" + updateStamp + ", user=" + user + ", notes=" + notes + "]";
+				+ ", updateStamp=" + updateStamp + ", userId=" + userId + ", notes=" + notes + "]";
 	}
 
+	public long getUserId() {
+		return userId;
+	}
 
+	
+	
 }

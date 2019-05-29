@@ -41,7 +41,7 @@ public class LabelService implements LabelServiceInterface {
 		long id = TokenUtil.verifyToken(token);
 		boolean isuser = userRepository.findById(id).isPresent();//.orElseThrow(() -> new UserException(env.getProperty("user.not.match")));
 		User user=userRepository.findById(id).get();
-		boolean islabel = labelRepository.findByLabelNameAndUser(labelDto.getLabelName(), user).isPresent();
+		boolean islabel = labelRepository.findByLabelName(labelDto.getLabelName()).isPresent();
 		if (islabel) {
 			Response response = ResponseUtil.getResponse(204,env.getProperty("label.exist"));
 			return response;
@@ -57,7 +57,8 @@ public class LabelService implements LabelServiceInterface {
 			Label label = modelMapper.map(labelDto, Label.class);
 			label.setUpdateStamp(Utility.todayDate());
 			label.setCreateStamp(Utility.todayDate());
-			label.setUser(user);
+			label.setUserId(id);
+			//label.setUser(user);
 			user.getLabels().add(label);
 			userRepository.save(user);
 
@@ -70,7 +71,7 @@ public class LabelService implements LabelServiceInterface {
 	public Response delete(long labelId, String token) {
 		long uid = TokenUtil.verifyToken(token);
 		User user = userRepository.findById(uid).get();
-		boolean isLabel = labelRepository.findByLabelIdAndUser(labelId, user).isPresent();
+		boolean isLabel = labelRepository.findByLabelId(labelId).isPresent();
 		if (!isLabel) {
 			Response response = ResponseUtil.getResponse(204,env.getProperty("label.notfound"));
 			return response;
@@ -88,12 +89,12 @@ public class LabelService implements LabelServiceInterface {
 		long uid = TokenUtil.verifyToken(token);
 
 		User user = userRepository.findById(uid).get();
-		boolean isLabel = labelRepository.findByLabelIdAndUser(id, user).isPresent();
+		boolean isLabel = labelRepository.findByLabelId(id).isPresent();
 		if (!isLabel) {
 			Response response = ResponseUtil.getResponse(204,env.getProperty("label.notfound"));
 			return response;
 		}
-		Label label = labelRepository.findByLabelIdAndUser(id, user).get();
+		Label label = labelRepository.findByLabelId(id).get();
 		label.setLabelName(labelDto.getLabelName());
 		label.setUpdateStamp(Utility.todayDate());
 		user.getLabels().add(label);

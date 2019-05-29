@@ -19,6 +19,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.bridgeit.label.model.Label;
 import com.bridgeit.user.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 //@Table(name = "note")
@@ -35,43 +36,23 @@ public class Note {
 	private String color;
 	private String createTime;
 	private String updateTime;
+	private long userId;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-	@JoinColumn(nullable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private User user;
-
-	@ManyToMany(fetch=FetchType.LAZY,cascade= {CascadeType.PERSIST,CascadeType.MERGE})
-	@JoinTable(name="note_label",joinColumns= {@JoinColumn(name="note_id")},inverseJoinColumns= {@JoinColumn(name="label_id")})
+	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "note_label", joinColumns = { @JoinColumn(name = "note_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "label_id") })
 	private Set<Label> labels;
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "NoteCollaborator", joinColumns = @JoinColumn(name = "note_id", referencedColumnName = "noteId"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"))
-	private List<User> collaborator;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "User_Collaborator", joinColumns = @JoinColumn(name = "note_id", referencedColumnName = "noteId"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"))
+	private List<User> collaboratedUsers;
 
-	
 	public Set<Label> getLabels() {
 		return labels;
 	}
 
 	public void setLabels(Set<Label> labels) {
 		this.labels = labels;
-	}
-
-	public List<User> getCollaborator() {
-		return collaborator;
-	}
-
-	public void setCollaborator(List<User> collaborator) {
-		this.collaborator = collaborator;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	public long getNoteId() {
@@ -146,13 +127,28 @@ public class Note {
 		this.updateTime = updateTime;
 	}
 
+	public List<User> getCollaboratedUsers() {
+		return collaboratedUsers;
+	}
+
+	public void setCollaboratedUsers(List<User> collaboratedUsers) {
+		this.collaboratedUsers = collaboratedUsers;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
 	@Override
 	public String toString() {
 		return "Note [noteId=" + noteId + ", title=" + title + ", description=" + description + ", trash=" + trash
 				+ ", archive=" + archive + ", isPin=" + isPin + ", color=" + color + ", createTime=" + createTime
-				+ ", updateTime=" + updateTime + ", user=" + user + ", labels=" + labels + ", collaborator="
-				+ collaborator + "]";
+				+ ", updateTime=" + updateTime + ", userId=" + userId + ", labels=" + labels + ", collaboratedUsers="
+				+ collaboratedUsers + "]";
+	}
+
+	public long getUserId() {
+		return userId;
 	}
 	
-
 }

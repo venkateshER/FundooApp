@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +34,8 @@ import com.bridgeit.utility.Response;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin(origins="*",allowedHeaders="*",exposedHeaders= {"jwtTokens"})
+//@CrossOrigin("*")
 public class UserController {
 
 	@Autowired
@@ -60,8 +63,8 @@ public class UserController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/setPassword/{token}")
-	public ResponseEntity<UserResponse> resetPassword(@RequestBody SetPasswordDto setPassDto, @PathVariable String token) {
+	@PutMapping(value = "/setPassword")
+	public ResponseEntity<UserResponse> resetPassword(@RequestBody SetPasswordDto setPassDto, @RequestHeader String token) {
 		UserResponse response = userService.setPassword(setPassDto, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
