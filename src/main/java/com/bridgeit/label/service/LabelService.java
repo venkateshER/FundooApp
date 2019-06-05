@@ -145,11 +145,11 @@ public class LabelService implements LabelServiceInterface {
 //		return response;
 //	}
 
-	@Override
-	public Set<Label> getAllLabels(String token) {
+	
+	public List<Label> getAllLabels(String token) {
 		long uid = TokenUtil.verifyToken(token);
 		User user = userRepository.findById(uid).get();
-		Set<Label> listLabels = user.getLabels();
+		List<Label> listLabels = user.getLabels();
 		return listLabels;
 
 	}

@@ -80,18 +80,20 @@ public class User {
 
 	@JoinColumn(name = "userId")
 	@OneToMany(targetEntity = Label.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonIgnore
-	private Set<Label> labels;
+//	@JsonIgnore
+	private List<Label> labels;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "collaboratedUsers")
 	@JsonIgnore
 	private List<Note> collaboratedNotes;
 
-	public Set<Label> getLabels() {
+	
+	
+	public List<Label> getLabels() {
 		return labels;
 	}
 
-	public void setLabels(Set<Label> labels) {
+	public void setLabels(List<Label> labels) {
 		this.labels = labels;
 	}
 

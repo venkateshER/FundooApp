@@ -1,5 +1,6 @@
 package com.bridgeit.label.model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -23,7 +24,6 @@ import com.bridgeit.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "label")
 public class Label {
 
 	private String labelName;
@@ -37,13 +37,15 @@ public class Label {
 	@ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},mappedBy = "labels")
 	@OnDelete(action=OnDeleteAction.CASCADE) 
 	@JsonIgnore
-	private Set<Note> notes;
+	private List<Note> notes;
 	
-	public Set<Note> getNotes() {
+	
+
+	public List<Note> getNotes() {
 		return notes;
 	}
 
-	public void setNotes(Set<Note> notes) {
+	public void setNotes(List<Note> notes) {
 		this.notes = notes;
 	}
 

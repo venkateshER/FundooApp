@@ -19,6 +19,6 @@ public interface LabelServiceInterface {
 //
 //	public Response removeNotes(long noteId, String token, long labelId);
 
-	public Set<Label> getAllLabels(String token);
+	
 
 }

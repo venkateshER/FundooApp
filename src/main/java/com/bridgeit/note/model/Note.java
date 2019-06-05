@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -28,6 +29,7 @@ public class Note {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long noteId;
+	@NotNull
 	private String title;
 	private String description;
 	private boolean trash;

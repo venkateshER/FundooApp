@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ import io.swagger.annotations.ResponseHeader;
 
 @RestController
 @RequestMapping("/note")
+@CrossOrigin(origins="*",allowedHeaders="*",exposedHeaders= {"jwtTokens"})
 public class NoteController {
 
 	@Autowired
@@ -73,9 +75,9 @@ public class NoteController {
 	}
 
 	@GetMapping("/getAllNotes")
-	public ResponseEntity<Object> getAllNotes(@RequestHeader String token) {
+	public List<Note> getAllNotes(@RequestHeader String token) {
 		List<Note> notes = noteService.getAllNotes(token);
-		return new ResponseEntity<>(notes, HttpStatus.OK);
+		return notes;
 	}
 
 	@PutMapping("/addLabel")

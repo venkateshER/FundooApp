@@ -1,9 +1,11 @@
 package com.bridgeit.label.controller;
 
+import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,7 @@ import com.bridgeit.utility.Response;
 
 @RequestMapping("/label")
 @RestController
+@CrossOrigin(origins="*",allowedHeaders="*",exposedHeaders= {"jwtTokens"})
 //@Controller
 public class LabelController {
 
@@ -46,9 +49,11 @@ public class LabelController {
 	}
 
 	@GetMapping("/getAllLabels")
-	ResponseEntity<Object> getLabels(@RequestHeader String token) {
-		Set<Label> labels = labelService.getAllLabels(token);
-		return new ResponseEntity<>(labels, HttpStatus.OK);
+	public List getLabels(@RequestHeader String token) {
+		System.out.println("djjsafjksdf");
+		List<Label> labels = labelService.getAllLabels(token);
+//		return new ResponseEntity<>(labels, HttpStatus.OK);
+		return labels;
 	}
 
 //	@PutMapping("/addNotes")
