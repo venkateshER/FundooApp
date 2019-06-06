@@ -9,11 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgeit.note.dto.NoteDto;
@@ -44,7 +46,7 @@ public class NoteController {
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<Response> update(@RequestHeader long id, @RequestBody NoteDto noteDto,
+	public ResponseEntity<Response> update(@RequestParam long id, @RequestBody NoteDto noteDto,
 			@RequestHeader String token) {
 		Response response = noteService.update(id, noteDto, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);

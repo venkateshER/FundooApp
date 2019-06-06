@@ -42,9 +42,9 @@ public class LabelController {
 	}
 
 	@PutMapping("/update")
-	ResponseEntity<Response> update(@RequestHeader long id, @RequestBody LabelDto labelDto,
+	ResponseEntity<Response> update(@RequestHeader long labelId, @RequestBody LabelDto labelDto,
 			@RequestHeader String token) {
-		Response response = labelService.update(id, labelDto, token);
+		Response response = labelService.update(labelId, labelDto, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
