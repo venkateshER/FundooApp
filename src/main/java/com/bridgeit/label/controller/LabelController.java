@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgeit.label.Dto.LabelDto;
@@ -36,15 +37,15 @@ public class LabelController {
 	}
 
 	@DeleteMapping("/delete")
-	ResponseEntity<Response> delete(@RequestHeader long labelId, @RequestHeader String token) {
-		Response response = labelService.delete(labelId, token);
+	ResponseEntity<Response> delete(@RequestParam long id, @RequestHeader String token) {
+		Response response = labelService.delete(id, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PutMapping("/update")
-	ResponseEntity<Response> update(@RequestHeader long labelId, @RequestBody LabelDto labelDto,
+	ResponseEntity<Response> update(@RequestParam long id, @RequestBody LabelDto labelDto,
 			@RequestHeader String token) {
-		Response response = labelService.update(labelId, labelDto, token);
+		Response response = labelService.update(id, labelDto, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 

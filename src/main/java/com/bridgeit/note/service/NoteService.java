@@ -86,7 +86,6 @@ public class NoteService implements NoteServiceInterface {
 			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		}
-		note.setTrash(true);
 		noteRepository.delete(note);
 		Response response = ResponseUtil.getResponse(200, env.getProperty("note.delete.success"));
 		return response;
@@ -106,7 +105,7 @@ public class NoteService implements NoteServiceInterface {
 			note.setUpdateTime(Utility.todayDate());
 			note.setTitle(noteDto.getTitle());
 			note.setDescription(noteDto.getDescription());
-			user.getNotes().add(note);
+			//user.getNotes().add(note);
 			noteRepository.save(note);
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 			return response;

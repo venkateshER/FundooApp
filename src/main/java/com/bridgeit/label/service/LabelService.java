@@ -97,8 +97,9 @@ public class LabelService implements LabelServiceInterface {
 		Label label = labelRepository.findByLabelId(id).get();
 		label.setLabelName(labelDto.getLabelName());
 		label.setUpdateStamp(Utility.todayDate());
-		user.getLabels().add(label);
-		userRepository.save(user);
+//		user.getLabels().add(label);
+//		userRepository.save(user);
+		labelRepository.save(label);
 
 		Response response = ResponseUtil.getResponse(200,env.getProperty("label.update.success"));
 		return response;

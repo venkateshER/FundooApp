@@ -40,7 +40,7 @@ public class NoteController {
 	}
 
 	@DeleteMapping("/delete")
-	public ResponseEntity<Response> delete(@RequestHeader long id, @RequestHeader String token) {
+	public ResponseEntity<Response> delete(@RequestParam long id, @RequestHeader String token) {
 		Response response = noteService.delete(id, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -52,27 +52,27 @@ public class NoteController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PutMapping("/pin")
-	public ResponseEntity<Response> pin(@RequestHeader String token,@RequestHeader long noteId) {
-		Response response = noteService.pin(token, noteId);
+	@DeleteMapping("/pin")
+	public ResponseEntity<Response> pin(@RequestHeader String token,@RequestParam long id) {
+		Response response = noteService.pin(token, id);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PutMapping("/trash")
-	public ResponseEntity<Response> trash(@RequestHeader String token,@RequestHeader long noteId) {
-		Response response = noteService.trash(token, noteId);
+	@DeleteMapping("/trash")
+	public ResponseEntity<Response> trash(@RequestHeader String token,@RequestParam long id) {
+		Response response = noteService.trash(token, id);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PutMapping("/archive")
-	public ResponseEntity<Response> archive(@RequestHeader String token,@RequestHeader long noteId) {
-		Response response = noteService.archive(token, noteId);
+	@DeleteMapping("/archive")
+	public ResponseEntity<Response> archive(@RequestHeader String token,@RequestParam long id) {
+		Response response = noteService.archive(token,id);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	@PutMapping("/color")
-	public ResponseEntity<Response>color(@RequestHeader String token, @RequestHeader long noteId,@RequestHeader String color)
+	public ResponseEntity<Response>color(@RequestHeader String token, @RequestParam long id,@RequestBody String color)
 	{
-		Response response=noteService.color(token, noteId, color);
+		Response response=noteService.color(token, id, color);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 

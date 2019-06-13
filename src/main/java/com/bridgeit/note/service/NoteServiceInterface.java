@@ -23,7 +23,7 @@ public interface NoteServiceInterface {
 
 	public Response trash(String token, long noteId);
 
-	public Response archive(String token, long noteId);
+	public Response archive( String token, long noteId);
 
 	public Response addLabels(long noteId, String token, long labelId);
 
