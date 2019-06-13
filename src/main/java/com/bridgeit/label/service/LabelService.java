@@ -1,8 +1,10 @@
 package com.bridgeit.label.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,6 +155,12 @@ public class LabelService implements LabelServiceInterface {
 		List<Label> listLabels = user.getLabels();
 		return listLabels;
 
+	}
+	public List<Note> getNotesFromLabel(long labelId, String token) {
+		long userId = TokenUtil.verifyToken(token);
+		Label label = labelRepository.findByLabelIdAndUserId(labelId, userId).get();	
+		List<Note> notes = label.getNotes().stream().collect(Collectors.toList());
+		return notes;
 	}
 
 }

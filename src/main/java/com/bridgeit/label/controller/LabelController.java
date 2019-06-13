@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bridgeit.label.Dto.LabelDto;
 import com.bridgeit.label.model.Label;
 import com.bridgeit.label.service.LabelService;
+import com.bridgeit.note.model.Note;
 import com.bridgeit.utility.Response;
 
 @RequestMapping("/label")
@@ -51,11 +52,17 @@ public class LabelController {
 
 	@GetMapping("/getAllLabels")
 	public List getLabels(@RequestHeader String token) {
-		System.out.println("djjsafjksdf");
+		
 		List<Label> labels = labelService.getAllLabels(token);
 //		return new ResponseEntity<>(labels, HttpStatus.OK);
 		return labels;
 	}
+	@GetMapping("/getNote")
+	public List<Note> getNotesFromLabel(@RequestParam long id ,@RequestHeader String token){
+		List<Note> notes=labelService.getNotesFromLabel(id,token);
+		return notes;
+	}
+	
 
 //	@PutMapping("/addNotes")
 //	ResponseEntity<Response> addNotes(@RequestHeader long noteId, @RequestHeader String token,

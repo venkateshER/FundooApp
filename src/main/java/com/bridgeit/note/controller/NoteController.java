@@ -82,10 +82,10 @@ public class NoteController {
 		return notes;
 	}
 
-	@PutMapping("/addLabel")
-	public ResponseEntity<Response> addLabel(@RequestHeader long noteId, @RequestHeader String token,
-			@RequestHeader long labelId) {
-		Response response = noteService.addLabels(noteId, token, labelId);
+	@DeleteMapping("/addLabel")
+	public ResponseEntity<Response> addLabel(@RequestParam long id, @RequestHeader String token,
+			@RequestParam long lid) {
+		Response response = noteService.addLabels(id, token, lid);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
