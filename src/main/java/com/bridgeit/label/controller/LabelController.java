@@ -58,9 +58,14 @@ public class LabelController {
 		return labels;
 	}
 	@GetMapping("/getNote")
-	public List<Note> getNotesFromLabel(@RequestParam long id ,@RequestHeader String token){
+	public List<Note> getNotes(@RequestParam long id ,@RequestHeader String token){
 		List<Note> notes=labelService.getNotesFromLabel(id,token);
 		return notes;
+	}
+	@GetMapping("/getNoteLabels")
+	public List<Label> getNotesLabel(@RequestParam long id ,@RequestHeader String token){
+		List<Label> labels=labelService.getNoteLabels(id, token);
+		return labels;
 	}
 	
 

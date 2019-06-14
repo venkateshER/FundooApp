@@ -162,5 +162,13 @@ public class LabelService implements LabelServiceInterface {
 		List<Note> notes = label.getNotes().stream().collect(Collectors.toList());
 		return notes;
 	}
+	public List<Label> getNoteLabels(long noteId,String token) {
+		long uid = TokenUtil.verifyToken(token);
+		//User user = userRepository.findById(uid).get();
+		Note note=noteRepository.findByNoteIdAndUserId(noteId, uid).get();
+		List<Label> labels=note.getLabels().stream().collect(Collectors.toList());
+		return labels;
+
+	}
 
 }

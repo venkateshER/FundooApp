@@ -90,9 +90,9 @@ public class NoteController {
 	}
 
 	@DeleteMapping("/removeLabel")
-	public ResponseEntity<Response> removeLabel(@RequestHeader long noteId, @RequestHeader String token,
-			@RequestHeader long labelId) {
-		Response response = noteService.removeLabels(noteId, token, labelId);
+	public ResponseEntity<Response> removeLabel(@RequestParam long id, @RequestHeader String token,
+			@RequestParam long lid) {
+		Response response = noteService.removeLabels(id, token, lid);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
