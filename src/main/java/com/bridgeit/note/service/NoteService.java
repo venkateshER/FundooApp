@@ -18,6 +18,7 @@ import com.bridgeit.exceptions.UserException;
 import com.bridgeit.label.model.Label;
 import com.bridgeit.label.repository.LabelRepositoryInterface;
 import com.bridgeit.note.dto.NoteDto;
+import com.bridgeit.note.dto.ReminderDto;
 import com.bridgeit.note.model.Note;
 import com.bridgeit.note.repository.NoteRepositoryInterface;
 
@@ -72,6 +73,44 @@ public class NoteService implements NoteServiceInterface {
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.create.success"));
 			return response;
 		}
+	}
+	
+	public Response reminder(ReminderDto reminderDto,String token,long noteId) {
+		
+		long uid=TokenUtil.verifyToken(token);
+		boolean isuser=userRepository.findById(uid).isPresent();
+		boolean isnote=noteRepository.findByNoteIdAndUserId(noteId, uid).isPresent();
+		if(!(isuser && isnote)) {
+			Response response = ResponseUtil.getResponse(204,"not present");
+			return response;
+		}
+		//User user=userRepository.findById(uid).get();
+		Note note=noteRepository.findByNoteIdAndUserId(noteId, uid).get();
+		note.setReminder(reminderDto.getReminder());
+	
+		noteRepository.save(note);
+		
+		Response response = ResponseUtil.getResponse(200,"Reminder Success");
+		return response;
+	}
+	
+	public Response unreminder(String token,long noteId) {
+		
+		long uid=TokenUtil.verifyToken(token);
+		boolean isuser=userRepository.findById(uid).isPresent();
+		boolean isnote=noteRepository.findByNoteIdAndUserId(noteId, uid).isPresent();
+		if(!(isuser && isnote)) {
+			Response response = ResponseUtil.getResponse(204,"not present");
+			return response;
+		}
+		//User user=userRepository.findById(uid).get();
+		Note note=noteRepository.findByNoteIdAndUserId(noteId, uid).get();
+		note.setReminder(null);
+	
+		noteRepository.save(note);
+		
+		Response response = ResponseUtil.getResponse(200,"unReminder Success");
+		return response;
 	}
 
 	@Override

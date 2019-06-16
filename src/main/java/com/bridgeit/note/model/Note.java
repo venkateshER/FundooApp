@@ -29,7 +29,6 @@ public class Note {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long noteId;
-	@NotNull
 	private String title;
 	private String description;
 	private boolean trash;
@@ -38,6 +37,7 @@ public class Note {
 	private String color;
 	private String createTime;
 	private String updateTime;
+	private String reminder;
 	private long userId;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -59,6 +59,14 @@ public class Note {
 
 	public long getNoteId() {
 		return noteId;
+	}
+
+	public String getReminder() {
+		return reminder;
+	}
+
+	public void setReminder(String reminder) {
+		this.reminder = reminder;
 	}
 
 	public void setNoteId(long noteId) {
@@ -140,17 +148,18 @@ public class Note {
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}
+	
+	public long getUserId() {
+		return userId;
+	}
 
 	@Override
 	public String toString() {
 		return "Note [noteId=" + noteId + ", title=" + title + ", description=" + description + ", trash=" + trash
 				+ ", archive=" + archive + ", isPin=" + isPin + ", color=" + color + ", createTime=" + createTime
-				+ ", updateTime=" + updateTime + ", userId=" + userId + ", labels=" + labels + ", collaboratedUsers="
-				+ collaboratedUsers + "]";
+				+ ", updateTime=" + updateTime + ", reminder=" + reminder + ", userId=" + userId + ", labels=" + labels
+				+ ", collaboratedUsers=" + collaboratedUsers + "]";
 	}
-
-	public long getUserId() {
-		return userId;
-	}
+	
 	
 }

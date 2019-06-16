@@ -4,7 +4,7 @@ public class NoteDto {
 
 	private String title;
 	private String description;
-
+	
 	public String getTitle() {
 		return title;
 	}
@@ -25,5 +25,8 @@ public class NoteDto {
 	public String toString() {
 		return "NoteDto [title=" + title + ", description=" + description + "]";
 	}
+	
+	
+	
 
 }

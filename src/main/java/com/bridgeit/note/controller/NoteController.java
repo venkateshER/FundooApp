@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgeit.note.dto.NoteDto;
+import com.bridgeit.note.dto.ReminderDto;
 import com.bridgeit.note.model.Note;
 import com.bridgeit.note.service.NoteService;
 import com.bridgeit.utility.Response;
@@ -36,6 +37,16 @@ public class NoteController {
 	@PostMapping("/create")
 	public ResponseEntity<Response> create(@RequestBody NoteDto noteDto, @RequestHeader String token) {
 		Response response = noteService.create(noteDto, token);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
+	@PostMapping("/reminder")
+	public ResponseEntity<Response> reminder(@RequestBody ReminderDto reminderDto, @RequestHeader String token,@RequestParam long id) {
+		Response response = noteService.reminder(reminderDto, token, id);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
+	@PutMapping("/unReminder")
+	public ResponseEntity<Response> unreminder(@RequestHeader String token,@RequestParam long id) {
+		Response response = noteService.unreminder(token, id);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
