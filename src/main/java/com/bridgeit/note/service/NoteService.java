@@ -49,6 +49,9 @@ public class NoteService implements NoteServiceInterface {
 	@Autowired
 	private Environment env;
 
+	@Autowired
+	private ElasticService elastic;
+	
 	@Override
 	public Response create(NoteDto noteDto, String token) {
 
@@ -68,8 +71,20 @@ public class NoteService implements NoteServiceInterface {
 			note.setTrash(false);
 			//note.setUser(user);
 			note.setUserId(userid);
-			user.getNotes().add(note);
-			userRepository.save(user);
+//			user.getNotes().add(note);
+//			
+//			userRepository.save(user);
+			
+			Note eNote=noteRepository.save(note);
+			try {
+				
+				elastic.escreateNote(eNote);
+				
+			} catch (Exception e) {
+				
+				System.out.println(""+e.getMessage());
+				e.printStackTrace();
+			}
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.create.success"));
 			return response;
 		}
