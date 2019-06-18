@@ -90,6 +90,21 @@ public class NoteService implements NoteServiceInterface {
 		}
 	}
 	
+	public Object getNoteId(long noteId) {
+		
+		
+		Note note=noteRepository.findById(noteId).get();
+		
+//		try {
+//			elastic.findById(String.valueOf(noteId));
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		return note;
+		
+	}
+	
 	public Response reminder(ReminderDto reminderDto,String token,long noteId) {
 		
 		long uid=TokenUtil.verifyToken(token);
@@ -133,14 +148,22 @@ public class NoteService implements NoteServiceInterface {
 		long userId = TokenUtil.verifyToken(token);
 		User user = userRepository.findById(userId).get();// .orElseThrow(()->new
 															// UserException(env.getProperty("user.password.change.success")));
-		Note note = noteRepository.findById(noteId).get();
+		
 		boolean isNote = noteRepository.findByNoteId(noteId).isPresent();
 
 		if (!isNote) {
 			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		}
-		noteRepository.delete(note);
+		Note note = noteRepository.findById(noteId).get();
+		String note1=String.valueOf(noteId);
+		noteRepository.deleteById(noteId);//(note);
+		try {
+			elastic.deleteNote(String.valueOf(note.getNoteId()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Response response = ResponseUtil.getResponse(200, env.getProperty("note.delete.success"));
 		return response;
 	}
@@ -148,10 +171,10 @@ public class NoteService implements NoteServiceInterface {
 	@Override
 	public Response update(long noteId, NoteDto noteDto, String token) {
 		Long userId = TokenUtil.verifyToken(token);
-		User user = userRepository.findById(userId).get();
+		boolean isuser = userRepository.findById(userId).isPresent();
 
 		boolean isNote = noteRepository.findByNoteId(noteId).isPresent();
-		if (!isNote) {
+		if (!(isNote && isuser)) {
 			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
 			return response;
 		} else {
@@ -160,7 +183,14 @@ public class NoteService implements NoteServiceInterface {
 			note.setTitle(noteDto.getTitle());
 			note.setDescription(noteDto.getDescription());
 			//user.getNotes().add(note);
-			noteRepository.save(note);
+			Note note1=noteRepository.save(note);
+			try {
+				elastic.updateNote(note1);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 			return response;
 		}
@@ -387,5 +417,25 @@ public class NoteService implements NoteServiceInterface {
 		}
 
 	}
+	public List<Note> searchNoteByTitle(String title) {
+	
+			List<Note> allNotes = new ArrayList<Note>();
+			try {
+				allNotes = elastic.searchByTitle(title);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return allNotes;
+		}
+	
+	public List<User> getCollaborator(long noteId,String token) {
+		long uid = TokenUtil.verifyToken(token);
+		Note note=noteRepository.findByNoteIdAndUserId(noteId, uid).get();
+		List<User> col=note.getCollaboratedUsers().stream().collect(Collectors.toList());
+		return col;
+
+	}
+
+	
 
 }

@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bridgeit.label.model.Label;
 import com.bridgeit.note.dto.NoteDto;
 import com.bridgeit.note.dto.ReminderDto;
 import com.bridgeit.note.model.Note;
+import com.bridgeit.note.service.ElasticService;
 import com.bridgeit.note.service.NoteService;
+import com.bridgeit.user.model.User;
 import com.bridgeit.utility.Response;
 
 import io.swagger.annotations.ResponseHeader;
@@ -107,17 +110,28 @@ public class NoteController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
-	@PutMapping("/addCollaborator")
-	public ResponseEntity<Response> addCollaborator(@RequestHeader long noteId,@RequestHeader String token,@RequestHeader String emailId)
+	@DeleteMapping("/addCollaborator")
+	public ResponseEntity<Response> addCollaborator(@RequestParam long noteId,@RequestHeader String token,@RequestParam String emailId)
 	{
 		Response response=noteService.addCollaborator(noteId, token, emailId);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	@DeleteMapping("/removeCollaborator")
-	public ResponseEntity<Response> removeCollaborator(@RequestHeader long noteId,@RequestHeader String token,@RequestHeader String emailId)
+	public ResponseEntity<Response> removeCollaborator(@RequestParam long noteId,@RequestHeader String token,@RequestParam String emailId)
 	{
 		Response response=noteService.removeCollaborator(noteId, token, emailId);
 		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	
+	@GetMapping("/searchTitle")
+	public List<Note> searchByTitle(@RequestParam String title){
+		List<Note> notes=noteService.searchNoteByTitle(title);
+		return notes;
+	}
+	@GetMapping("/getCollaborator")
+	public List<User> getNotesLabel(@RequestParam long id ,@RequestHeader String token){
+		List<User> col=noteService.getCollaborator(id, token);
+		return col;
 	}
 
 }
