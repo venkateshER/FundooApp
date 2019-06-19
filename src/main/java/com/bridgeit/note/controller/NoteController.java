@@ -96,7 +96,7 @@ public class NoteController {
 		return notes;
 	}
 
-	@DeleteMapping("/addLabel")
+	@GetMapping("/addLabel")
 	public ResponseEntity<Response> addLabel(@RequestParam long id, @RequestHeader String token,
 			@RequestParam long lid) {
 		Response response = noteService.addLabels(id, token, lid);
@@ -110,7 +110,7 @@ public class NoteController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/addCollaborator")
+	@GetMapping("/addCollaborator")
 	public ResponseEntity<Response> addCollaborator(@RequestParam long noteId,@RequestHeader String token,@RequestParam String emailId)
 	{
 		Response response=noteService.addCollaborator(noteId, token, emailId);

@@ -28,117 +28,103 @@ import org.springframework.stereotype.Service;
 
 import com.bridgeit.note.model.Note;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class ElasticService {
-	
+
 	private RestHighLevelClient client;
 
-    private ObjectMapper objectMapper;
+	private ObjectMapper objectMapper;
 
-    @Autowired
-    public ElasticService(RestHighLevelClient client, ObjectMapper objectMapper) {
-        this.client = client;
-        this.objectMapper = objectMapper;
-    }
+	@Autowired
+	public ElasticService(RestHighLevelClient client, ObjectMapper objectMapper) {
+		this.client = client;
+		this.objectMapper = objectMapper;
+	}
 
-    String INDEX="elasticsearch";
-    String TYPE="searchNotes";
+	String INDEX = "elasticsearch";
+	String TYPE = "searchNotes";
 
-    public String escreateNote(Note note) throws Exception {
+	public String escreateNote(Note note) throws Exception {
 
-    	
-        Map<String, Object> documentMapper = objectMapper.convertValue(note, Map.class);
+		Map<String, Object> documentMapper = objectMapper.convertValue(note, Map.class);
 
-		IndexRequest indexRequest = new IndexRequest(INDEX,TYPE,String.valueOf(note.getNoteId()))
-                .source(documentMapper);//.index(INDEX).type(TYPE);
+		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, String.valueOf(note.getNoteId()))
+				.source(documentMapper);// .index(INDEX).type(TYPE);
 
-        IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
+		IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
 
-        return indexResponse.getResult().name();
-    }
-    
-    
-    public Note findById(String noteId) throws Exception {
+		return indexResponse.getResult().name();
+	}
 
-        GetRequest getRequest = new GetRequest(INDEX, TYPE, noteId);
+	public Note findById(String noteId) throws Exception {
 
-        GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
-        Map<String, Object> resultMap = getResponse.getSource();
+		GetRequest getRequest = new GetRequest(INDEX, TYPE, noteId);
 
-        return objectMapper.convertValue(resultMap, Note.class);
+		GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
+		Map<String, Object> resultMap = getResponse.getSource();
 
+		return objectMapper.convertValue(resultMap, Note.class);
 
-    }
-    private List<Note> getSearchResult(SearchResponse response) {
+	}
 
-        SearchHit[] searchHit = response.getHits().getHits();
+	private List<Note> getSearchResult(SearchResponse response) {
 
-        List<Note> note = new ArrayList<>();
+		SearchHit[] searchHit = response.getHits().getHits();
 
-        if (searchHit.length > 0) {
+		List<Note> note = new ArrayList<>();
 
-            Arrays.stream(searchHit).forEach(hit ->note.add(objectMapper.convertValue(hit.getSourceAsMap(),
-                                                    Note.class))
-                    );
-        }
+		if (searchHit.length > 0) {
 
-        return note;
-    }
-    
-    public List<Note> searchByTitle(String title) throws Exception {
+			Arrays.stream(searchHit)
+					.forEach(hit -> note.add(objectMapper.convertValue(hit.getSourceAsMap(), Note.class)));
+		}
 
-        SearchRequest searchRequest = new SearchRequest();
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		return note;
+	}
 
-        QueryBuilder queryBuilder = QueryBuilders
-                .boolQuery()
-                .must(QueryBuilders
-                        .matchQuery("title", title));
+	public List<Note> searchByTitle(String title) throws Exception {
 
-        searchSourceBuilder.query(queryBuilder);
+		SearchRequest searchRequest = new SearchRequest();
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+
+		QueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("title", title));
+
+		searchSourceBuilder.query(queryBuilder);
 //                .nestedQuery("title",
 //                        queryBuilder,
 //                        ScoreMode.Avg));
 
-        searchRequest.source(searchSourceBuilder);
+		searchRequest.source(searchSourceBuilder);
 
-        SearchResponse response =
-                client.search(searchRequest, RequestOptions.DEFAULT);
+		SearchResponse response = client.search(searchRequest, RequestOptions.DEFAULT);
 
-        return getSearchResult(response);
-    }
-    
-    public String deleteNote(String noteId) throws Exception {
+		return getSearchResult(response);
+	}
 
-        DeleteRequest deleteRequest = new DeleteRequest(INDEX,TYPE,noteId);//.index(INDEX).type(TYPE);
-        DeleteResponse response =
-                client.delete(deleteRequest, RequestOptions.DEFAULT);
+	public String deleteNote(String noteId) throws Exception {
 
-        return response
-                .getResult()
-                .name();
+		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, noteId);// .index(INDEX).type(TYPE);
+		DeleteResponse response = client.delete(deleteRequest, RequestOptions.DEFAULT);
 
-    }
-    
+		return response.getResult().name();
 
-public String updateNote(Note document) throws Exception {
+	}
 
-        Note resultDocument = findById(String.valueOf(document.getNoteId()));
+	public String updateNote(Note document) throws Exception {
 
-        UpdateRequest updateRequest = new UpdateRequest(INDEX,TYPE,String.valueOf(resultDocument.getNoteId()));
+		Note resultDocument = findById(String.valueOf(document.getNoteId()));
 
-        Map<String, Object> documentMapper = 
-          objectMapper.convertValue(document, Map.class);
+		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, String.valueOf(resultDocument.getNoteId()));
 
-        updateRequest.doc(documentMapper);
+		Map<String, Object> documentMapper = objectMapper.convertValue(document, Map.class);
 
-        UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
+		updateRequest.doc(documentMapper);
 
-        return updateResponse
-                .getResult()
-                .name();
+		UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
 
-    }
-    
-   
+		return updateResponse.getResult().name();
+
+	}
+
 }
