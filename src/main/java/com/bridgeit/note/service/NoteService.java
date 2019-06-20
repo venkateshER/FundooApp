@@ -1,10 +1,15 @@
 package com.bridgeit.note.service;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -157,7 +162,8 @@ public class NoteService implements NoteServiceInterface {
 		}
 		Note note = noteRepository.findById(noteId).get();
 		String note1=String.valueOf(noteId);
-		noteRepository.deleteById(noteId);//(note);
+		//noteRepository.deleteById(noteId);//(note);
+		noteRepository.delete(note);
 		try {
 			elastic.deleteNote(String.valueOf(note.getNoteId()));
 		} catch (Exception e) {
@@ -435,7 +441,81 @@ public class NoteService implements NoteServiceInterface {
 		return col;
 
 	}
-
+	
+	public Response today(long noteId) {
+		
+		boolean isnote=noteRepository.findById(noteId).isPresent();
+		if(!isnote) {
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
+			return response;
+		}
+		else {
+		Note note=noteRepository.findById(noteId).get();
+		note.setReminder(Utility.todayDate());
+		noteRepository.save(note);
+		Response response = ResponseUtil.getResponse(200, " successs");
+		return response;
+		}
+	}
 	
 
+	public Response tomorrow(long noteId) {
+		
+		boolean isnote=noteRepository.findById(noteId).isPresent();
+		if(!isnote) {
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
+			return response;
+		}
+		else {
+		Note note=noteRepository.findById(noteId).get();
+		
+		Calendar calendar = Calendar.getInstance();
+		 calendar.add(Calendar.DAY_OF_YEAR, 1);
+		 Date tomorrow = calendar.getTime();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			String timeanddate = dateFormat.format(tomorrow);
+		    note.setReminder(timeanddate);
+		    
+		noteRepository.save(note);
+		Response response = ResponseUtil.getResponse(200, " successs");
+		return response;
+		}
+	}
+	
+	public Response forWeek(long noteId) {
+		
+		boolean isnote=noteRepository.findById(noteId).isPresent();
+		if(!isnote) {
+			Response response = ResponseUtil.getResponse(204, env.getProperty("note.notfound"));
+			return response;
+		}
+		else {
+		Note note=noteRepository.findById(noteId).get();
+		
+		Calendar calendar = Calendar.getInstance();
+		 calendar.add(Calendar.DAY_OF_YEAR, 7);
+		 Date tomorrow = calendar.getTime();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			String timeanddate = dateFormat.format(tomorrow);
+		    note.setReminder(timeanddate);
+		    
+		noteRepository.save(note);
+		Response response = ResponseUtil.getResponse(200, " successs");
+		return response;
+		}
+	}
+	
+	public String getAllreminder(String token,long noteId) {
+		long id = TokenUtil.verifyToken(token);
+//		User user = userRepository.findById(id).get();
+		Note note=noteRepository.findByNoteIdAndUserId(noteId, id).get();
+		if(note.getReminder()!=null)
+		{
+		String notes= note.getReminder();
+		return notes;
+		}
+		else {
+		return null;
+		}
+	}
 }

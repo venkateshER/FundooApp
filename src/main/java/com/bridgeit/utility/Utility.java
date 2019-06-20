@@ -17,7 +17,7 @@ public class Utility {
 //		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 //		String timeanddate = dateFormat.format(date);
 //		return timeanddate;
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.now();//.now();
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		String formatDateTime = now.format(format);
 		return formatDateTime;

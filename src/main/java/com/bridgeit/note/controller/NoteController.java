@@ -47,7 +47,7 @@ public class NoteController {
 		Response response = noteService.reminder(reminderDto, token, id);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
-	@PutMapping("/unReminder")
+	@DeleteMapping("/unReminder")
 	public ResponseEntity<Response> unreminder(@RequestHeader String token,@RequestParam long id) {
 		Response response = noteService.unreminder(token, id);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
@@ -133,5 +133,32 @@ public class NoteController {
 		List<User> col=noteService.getCollaborator(id, token);
 		return col;
 	}
-
+	
+	@GetMapping("/today")
+	public ResponseEntity<Response> today(@RequestParam long id){
+		Response response=noteService.today(id);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	@GetMapping("/tomorrow")
+	public ResponseEntity<Response> tomorrow(@RequestParam long id){
+		Response response=noteService.tomorrow(id);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	@GetMapping("/week")
+	public ResponseEntity<Response> week(@RequestParam long id){
+		Response response=noteService.forWeek(id);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+//	@GetMapping("/getAllreminder")
+//	public Object getAllreminder(@RequestParam long id,@RequestHeader String token){
+////		List<Note> reminder=noteService.getAllreminder(token, id);
+////		return reminder;
+//		return noteService.getAllreminder(token, id);
+//	}
+	@GetMapping("/getAllReminder")
+	public String getAllReminder(@RequestHeader String token, @RequestParam long id) {
+		
+		String reminder=noteService.getAllreminder(token, id);
+		return reminder;
+	}
 }
