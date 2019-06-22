@@ -161,4 +161,8 @@ public class NoteController {
 		String reminder=noteService.getAllreminder(token, id);
 		return reminder;
 	}
+	@GetMapping("redisNotes")
+	public Note redisData(@RequestParam long noteId) {
+	    return noteService.getRedisData(noteId);
+	}
 }

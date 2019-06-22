@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
@@ -86,7 +87,8 @@ public class NoteService implements NoteServiceInterface {
 //			userRepository.save(user);
 			
 			Note eNote=noteRepository.save(note);
-			redis.opsForHash().put(KEY,String.valueOf(note.getUserId()),note.getClass());
+			redis.opsForHash().put(KEY,note.getNoteId(),note);
+			
 			try {
 				
 				elastic.escreateNote(eNote);
@@ -101,6 +103,22 @@ public class NoteService implements NoteServiceInterface {
 		}
 	}
 	
+	public Note getRedisData(long id){
+//	    long userid = tokengenerators.decodeToken(token);
+
+	    return (Note) redis.opsForHash().get(KEY, id);
+//	    return redisUtil.getMapAsSingleEntry(KEY, id);
+	    
+	}  
+	
+//	public Note getSingleNoteFromRedis(long userId, long noteId) {
+//		Note note = redis.getMapAsSingleEntry("note", noteId);
+//		System.out.println("Note is " + note);
+//		Map<Object, Note> map = redisService.getMapAsAll("note");
+//		System.out.println("map " + map);
+//		return note;
+//	}
+
 	public Object getNoteId(long noteId) {
 		
 		
@@ -115,6 +133,8 @@ public class NoteService implements NoteServiceInterface {
 		return note;
 		
 	}
+	
+	
 	
 	public Response reminder(ReminderDto reminderDto,String token,long noteId) {
 		
