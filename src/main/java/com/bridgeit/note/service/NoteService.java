@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.bridgeit.exceptions.NoteException;
@@ -53,9 +54,13 @@ public class NoteService implements NoteServiceInterface {
 	private EmailSenderUtil emailSender;
 	@Autowired
 	private Environment env;
-
+	@Autowired
+	private RedisTemplate<String, Object> redis;
 	@Autowired
 	private ElasticService elastic;
+	
+	
+	private static final String KEY = "note";
 	
 	@Override
 	public Response create(NoteDto noteDto, String token) {
@@ -81,6 +86,7 @@ public class NoteService implements NoteServiceInterface {
 //			userRepository.save(user);
 			
 			Note eNote=noteRepository.save(note);
+			redis.opsForHash().put(KEY,String.valueOf(note.getUserId()),note.getClass());
 			try {
 				
 				elastic.escreateNote(eNote);

@@ -1,5 +1,6 @@
 package com.bridgeit.user.controller;
 
+import java.net.URL;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -105,6 +106,13 @@ public class UserController {
 		// return this.amazonClient.deleteFileFromS3Bucket(fileName,token);
 		UserResponse response = amazonClient.deleteFileFromS3Bucket(fileName, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping("/getProfile")
+	public URL getProfilePic(@RequestHeader String token)
+	{
+		URL profile=amazonClient.getProfile(token);
+		return profile;
 	}
 
 }

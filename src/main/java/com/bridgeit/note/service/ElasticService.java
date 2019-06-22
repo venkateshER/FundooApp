@@ -114,10 +114,9 @@ public class ElasticService {
 	public String updateNote(Note document) throws Exception {
 
 		Note resultDocument = findById(String.valueOf(document.getNoteId()));
+		Map<String, Object> documentMapper = objectMapper.convertValue(document, Map.class);
 
 		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, String.valueOf(resultDocument.getNoteId()));
-
-		Map<String, Object> documentMapper = objectMapper.convertValue(document, Map.class);
 
 		updateRequest.doc(documentMapper);
 
