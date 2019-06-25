@@ -12,9 +12,9 @@ public class RedisConfig {
     JedisConnectionFactory jedisConnectionFactory() {
 		
 		JedisConnectionFactory jedis=new JedisConnectionFactory();
-		jedis.setHostName("localhost");
-		jedis.setPort(6379);
-		
+//		jedis.setHostName("localhost");
+//		jedis.setPort(6379);
+//		
         return new JedisConnectionFactory();
     }
  

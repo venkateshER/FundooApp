@@ -8,8 +8,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import com.bridgeit.note.model.Note;
 import com.bridgeit.user.dto.ForgotPasswordDto;
 import com.bridgeit.user.dto.LoginDto;
 import com.bridgeit.user.dto.SetPasswordDto;
@@ -38,7 +40,11 @@ public class UserService implements UserServiceInterface {
 	private EncryptUtil encryptUtil;
 	@Autowired
 	private Environment env;
+	@Autowired
+	private RedisTemplate<String, Object> redis;
 
+	private static final String KEY = "user";
+	
 	@Override
 	public UserResponse register(UserDto userDto, HttpServletRequest request) {
 
@@ -120,6 +126,7 @@ public class UserService implements UserServiceInterface {
 		String token = TokenUtil.generateToken(user.getUserId());
 		httpResponse.addHeader("token", token);
 		user.setUpdateStamp(Utility.todayDate());
+		redis.opsForHash().put(KEY,token,user);
 		userRepository.save(user);
 		UserResponse response = UserResponseUtil.getResponse(200, token, env.getProperty("user.login.success"));
 		return response;
@@ -166,5 +173,13 @@ public class UserService implements UserServiceInterface {
 		return response;
 
 	}
+
+	public User getRedisData(String token){
+//   long userid = TokenUtil.verifyToken(token);
+
+	    return (User) redis.opsForHash().get(KEY, token);
+//	    return redisUtil.getMapAsSingleEntry(KEY, id);
+	    
+	}  
 
 }

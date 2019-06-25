@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.bridgeit.note.model.Note;
 import com.bridgeit.user.dto.ForgotPasswordDto;
 import com.bridgeit.user.dto.LoginDto;
 import com.bridgeit.user.dto.SetPasswordDto;
@@ -113,6 +115,11 @@ public class UserController {
 	{
 		URL profile=amazonClient.getProfile(token);
 		return profile;
+	}
+	
+	@GetMapping("redisToken")
+	public User redisData(@RequestHeader  String token) {
+	    return userService.getRedisData(token);
 	}
 
 }
