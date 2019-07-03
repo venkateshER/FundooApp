@@ -40,10 +40,10 @@ public class UserService implements UserServiceInterface {
 	private EncryptUtil encryptUtil;
 	@Autowired
 	private Environment env;
-	@Autowired
-	private RedisTemplate<String, Object> redis;
-
-	private static final String KEY = "user";
+//	@Autowired
+//	private RedisTemplate<String, Object> redis;
+//
+//	private static final String KEY = "user";
 	
 	@Override
 	public UserResponse register(UserDto userDto, HttpServletRequest request) {
@@ -126,7 +126,7 @@ public class UserService implements UserServiceInterface {
 		String token = TokenUtil.generateToken(user.getUserId());
 		httpResponse.addHeader("token", token);
 		user.setUpdateStamp(Utility.todayDate());
-		redis.opsForHash().put(KEY,token,user);
+//		redis.opsForHash().put(KEY,token,user);
 		userRepository.save(user);
 		UserResponse response = UserResponseUtil.getResponse(200, token, env.getProperty("user.login.success"));
 		return response;
@@ -173,13 +173,13 @@ public class UserService implements UserServiceInterface {
 		return response;
 
 	}
-
-	public User getRedisData(String token){
-//   long userid = TokenUtil.verifyToken(token);
-
-	    return (User) redis.opsForHash().get(KEY, token);
-//	    return redisUtil.getMapAsSingleEntry(KEY, id);
-	    
-	}  
+//
+//	public User getRedisData(String token){
+////   long userid = TokenUtil.verifyToken(token);
+//
+//	    return (User) redis.opsForHash().get(KEY, token);
+////	    return redisUtil.getMapAsSingleEntry(KEY, id);
+//	    
+//	}  
 
 }

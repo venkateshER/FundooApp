@@ -57,6 +57,13 @@ public class LabelService implements LabelServiceInterface {
 		else {
 			
 			Label label = modelMapper.map(labelDto, Label.class);
+//			List<Label> labels=new ArrayList<Label>();
+//			if(labels.stream().filter(u->u.getLabelName().equals(label.getLabelName())).findFirst().isPresent())
+//			{
+//				Response response = ResponseUtil.getResponse(200,"Already present");
+//				return response;
+//			}
+			
 			label.setUpdateStamp(Utility.todayDate());
 			label.setCreateStamp(Utility.todayDate());
 			label.setUserId(id);
@@ -66,7 +73,8 @@ public class LabelService implements LabelServiceInterface {
 
 			Response response = ResponseUtil.getResponse(200,env.getProperty("label.create.success"));
 			return response;
-		}
+			}
+		
 	}
 
 	@Override

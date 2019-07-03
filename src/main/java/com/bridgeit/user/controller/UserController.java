@@ -117,9 +117,9 @@ public class UserController {
 		return profile;
 	}
 	
-	@GetMapping("redisToken")
-	public User redisData(@RequestHeader  String token) {
-	    return userService.getRedisData(token);
-	}
+//	@GetMapping("redisToken")
+//	public User redisData(@RequestHeader  String token) {
+//	    return userService.getRedisData(token);
+//	}
 
 }
