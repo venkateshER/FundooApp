@@ -22,7 +22,7 @@ import com.bridgeit.label.model.Label;
 import com.bridgeit.note.dto.NoteDto;
 import com.bridgeit.note.dto.ReminderDto;
 import com.bridgeit.note.model.Note;
-import com.bridgeit.note.service.ElasticService;
+//import com.bridgeit.note.service.ElasticService;
 import com.bridgeit.note.service.NoteService;
 import com.bridgeit.user.model.User;
 import com.bridgeit.utility.Response;
