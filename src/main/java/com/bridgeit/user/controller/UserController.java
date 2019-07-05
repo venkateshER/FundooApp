@@ -96,7 +96,7 @@ public class UserController {
 //	}
 
 	@PostMapping("/uploadFile")
-	public ResponseEntity<UserResponse> uploadFile(@RequestPart(value = "file") MultipartFile file, String token) {
+	public ResponseEntity<UserResponse> uploadFile(@RequestPart(value = "file") MultipartFile file,@RequestParam String token) {
 		// return this.amazonClient.uploadFile(file, token);
 		UserResponse response = amazonClient.uploadFile(file, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
@@ -117,9 +117,9 @@ public class UserController {
 		return profile;
 	}
 	
-//	@GetMapping("redisToken")
-//	public User redisData(@RequestHeader  String token) {
-//	    return userService.getRedisData(token);
-//	}
+	@GetMapping("redisToken")
+	public User redisData(@RequestHeader  String token) {
+	    return userService.getRedisData(token);
+	}
 
 }

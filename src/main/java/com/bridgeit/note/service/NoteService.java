@@ -55,13 +55,13 @@ public class NoteService implements NoteServiceInterface {
 	private EmailSenderUtil emailSender;
 	@Autowired
 	private Environment env;
-//	@Autowired
-//	private RedisTemplate<String, Object> redis;
-//	@Autowired
-//	private ElasticService elastic;
-//	
-//	
-//	private static final String KEY = "note";
+	@Autowired
+	private RedisTemplate<String, Object> redis;
+	@Autowired
+	private ElasticService elastic;
+	
+	
+	private static final String KEY = "note";
 	
 	@Override
 	public Response create(NoteDto noteDto, String token) {
@@ -87,29 +87,29 @@ public class NoteService implements NoteServiceInterface {
 //			userRepository.save(user);
 			
 			Note eNote=noteRepository.save(note);
-//			redis.opsForHash().put(KEY,note.getNoteId(),note);
-//			
-//			try {
-//				
-//				elastic.escreateNote(eNote);
-//				
-//			} catch (Exception e) {
-//				
-//				System.out.println(""+e.getMessage());
-//				e.printStackTrace();
-//			}
+			redis.opsForHash().put(KEY,note.getNoteId(),note);
+			
+			try {
+				
+				elastic.escreateNote(eNote);
+				
+			} catch (Exception e) {
+				
+				System.out.println(""+e.getMessage());
+				e.printStackTrace();
+			}
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.create.success"));
 			return response;
 		}
 	}
 	
-//	public Note getRedisData(long id){
-////	    long userid = tokengenerators.decodeToken(token);
-//
-//	    return (Note) redis.opsForHash().get(KEY, id);
-////	    return redisUtil.getMapAsSingleEntry(KEY, id);
-//	    
-//	}  
+	public Note getRedisData(long id){
+//	    long userid = tokengenerators.decodeToken(token);
+
+	    return (Note) redis.opsForHash().get(KEY, id);
+//	    return redisUtil.getMapAsSingleEntry(KEY, id);
+	    
+	}  
 	
 //	public Note getSingleNoteFromRedis(long userId, long noteId) {
 //		Note note = redis.getMapAsSingleEntry("note", noteId);
@@ -190,12 +190,12 @@ public class NoteService implements NoteServiceInterface {
 		String note1=String.valueOf(noteId);
 		//noteRepository.deleteById(noteId);//(note);
 		noteRepository.delete(note);
-//		try {
-//			elastic.deleteNote(String.valueOf(note.getNoteId()));
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			elastic.deleteNote(String.valueOf(note.getNoteId()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Response response = ResponseUtil.getResponse(200, env.getProperty("note.delete.success"));
 		return response;
 	}
@@ -216,12 +216,12 @@ public class NoteService implements NoteServiceInterface {
 			note.setDescription(noteDto.getDescription());
 			//user.getNotes().add(note);
 			Note note1=noteRepository.save(note);
-//			try {
-//				elastic.updateNote(note1);
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			try {
+				elastic.updateNote(note1);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			Response response = ResponseUtil.getResponse(200, env.getProperty("note.update.success"));
 			return response;
@@ -452,11 +452,11 @@ public class NoteService implements NoteServiceInterface {
 	public List<Note> searchNoteByTitle(String title) {
 	
 			List<Note> allNotes = new ArrayList<Note>();
-//			try {
-//				allNotes = elastic.searchByTitle(title);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
+			try {
+				allNotes = elastic.searchByTitle(title);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return allNotes;
 		}
 	
