@@ -5,6 +5,12 @@ public class NoteDto {
 	private String title;
 	private String description;
 	
+	public NoteDto(String title, String description) {
+	
+		this.title = title;
+		this.description = description;
+	}
+
 	public String getTitle() {
 		return title;
 	}

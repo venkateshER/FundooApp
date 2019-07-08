@@ -465,7 +465,6 @@ public class NoteService implements NoteServiceInterface {
 		Note note=noteRepository.findByNoteIdAndUserId(noteId, uid).get();
 		List<User> col=note.getCollaboratedUsers().stream().collect(Collectors.toList());
 		return col;
-
 	}
 	
 	public Response today(long noteId) {
