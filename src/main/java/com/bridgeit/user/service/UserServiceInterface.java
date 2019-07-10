@@ -17,11 +17,11 @@ import com.bridgeit.user.model.UserResponse;
 public interface UserServiceInterface {
 	public List<User> getAll();
 
-	public UserResponse register(UserDto userDto, HttpServletRequest request);
+	public UserResponse register(UserDto userDto);
 
-	public UserResponse forgotPassword(ForgotPasswordDto forgotdto, HttpServletRequest request);
+	public UserResponse forgotPassword(ForgotPasswordDto forgotdto);
 
-	public UserResponse login(LoginDto loginDto, HttpServletResponse httpResponse);
+	public UserResponse login(LoginDto loginDto);
 
 	public UserResponse setPassword(SetPasswordDto setPassDto, String token);
 
@@ -29,6 +29,6 @@ public interface UserServiceInterface {
 
 	public UserResponse registerActivation(String token);
 
-	public void registerActivationMail(User user, HttpServletRequest request);
+	public void registerActivationMail(User user);
 
 }

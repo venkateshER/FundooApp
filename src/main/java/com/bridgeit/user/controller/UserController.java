@@ -48,8 +48,8 @@ public class UserController {
 	private AmazonClient amazonClient;
 
 	@PostMapping("/register")
-	public ResponseEntity<UserResponse> userRegister(@RequestBody UserDto user, HttpServletRequest request) {
-		UserResponse response = userService.register(user, request);
+	public ResponseEntity<UserResponse> userRegister(@RequestBody UserDto user) {
+		UserResponse response = userService.register(user);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -60,22 +60,21 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/forgotpassword")
-	public ResponseEntity<UserResponse> userForgotPassword(@RequestBody ForgotPasswordDto forgotdto,
-			HttpServletRequest request) {
-		UserResponse response = userService.forgotPassword(forgotdto, request);
+	public ResponseEntity<UserResponse> userForgotPassword(@RequestBody ForgotPasswordDto forgotdto) {
+		UserResponse response = userService.forgotPassword(forgotdto);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/setPassword")
-	public ResponseEntity<UserResponse> resetPassword(@RequestBody SetPasswordDto setPassDto, @RequestHeader String token) {
+	@PutMapping(value = "/setPassword/{token}")
+	public ResponseEntity<UserResponse> resetPassword(@RequestBody SetPasswordDto setPassDto, @PathVariable String token) {
 		UserResponse response = userService.setPassword(setPassDto, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@PostMapping(value = "/login")
-	public ResponseEntity<UserResponse> userLogin(@RequestBody LoginDto loginDto, HttpServletResponse httpResponse) {
+	public ResponseEntity<UserResponse> userLogin(@RequestBody LoginDto loginDto) {
 
-		UserResponse response = userService.login(loginDto, httpResponse);
+		UserResponse response = userService.login(loginDto);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -104,7 +103,7 @@ public class UserController {
 	}
 
 	@DeleteMapping("/deleteFile")
-	public ResponseEntity<UserResponse> deleteFile(@RequestHeader String fileName, @RequestHeader String token) {
+	public ResponseEntity<UserResponse> deleteFile(@RequestParam String fileName, @RequestHeader String token) {
 		// return this.amazonClient.deleteFileFromS3Bucket(fileName,token);
 		UserResponse response = amazonClient.deleteFileFromS3Bucket(fileName, token);
 		return new ResponseEntity<>(response, HttpStatus.OK);

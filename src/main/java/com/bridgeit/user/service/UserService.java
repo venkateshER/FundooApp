@@ -46,7 +46,7 @@ public class UserService implements UserServiceInterface {
 	private static final String KEY = "user";
 	
 	@Override
-	public UserResponse register(UserDto userDto, HttpServletRequest request) {
+	public UserResponse register(UserDto userDto) {
 
 		boolean isUser = userRepository.findByEmailId(userDto.getEmailId()).isPresent();
 
@@ -61,11 +61,21 @@ public class UserService implements UserServiceInterface {
 			user.setRegisterStamp(Utility.todayDate());
 			user.setUpdateStamp(Utility.todayDate());
 			userRepository.save(user);
-			registerActivationMail(user, request);
+			registerActivationMail(user);
 			UserResponse response = UserResponseUtil.getResponse(200, token, env.getProperty("user.register.success"));
 			return response;
 		}
 
+	}
+	
+	@Override
+	public void registerActivationMail(User user) {
+		String token = TokenUtil.generateToken(user.getUserId());
+//		StringBuffer requestUrl = request.getRequestURL();
+//		System.out.println("" + requestUrl);
+		String url = "http://localhost:9090/user/activation/" + token;
+//		System.out.println(url);
+		emailSender.mailSender(user.getEmailId(), env.getProperty("user.email.register"), url);
 	}
 
 	@Override
@@ -85,7 +95,7 @@ public class UserService implements UserServiceInterface {
 	}
 
 	@Override
-	public UserResponse forgotPassword(ForgotPasswordDto forgotdto, HttpServletRequest request) {
+	public UserResponse forgotPassword(ForgotPasswordDto forgotdto) {
 
 		String email = forgotdto.getEmailId();
 		boolean isUser = userRepository.findByEmailId(email).isPresent();
@@ -108,7 +118,7 @@ public class UserService implements UserServiceInterface {
 	}
 
 	@Override
-	public UserResponse login(LoginDto loginDto, HttpServletResponse httpResponse) {
+	public UserResponse login(LoginDto loginDto) {
 
 		boolean isEmail = userRepository.findByEmailId(loginDto.getEmailId()).isPresent();
 		if (!isEmail) {
@@ -124,7 +134,7 @@ public class UserService implements UserServiceInterface {
 			return response;
 		}
 		String token = TokenUtil.generateToken(user.getUserId());
-		httpResponse.addHeader("token", token);
+//		httpResponse.addHeader("token", token);
 		user.setUpdateStamp(Utility.todayDate());
 		redis.opsForHash().put(KEY,token,user);
 		userRepository.save(user);
@@ -133,15 +143,6 @@ public class UserService implements UserServiceInterface {
 
 	}
 
-	@Override
-	public void registerActivationMail(User user, HttpServletRequest request) {
-		String token = TokenUtil.generateToken(user.getUserId());
-		StringBuffer requestUrl = request.getRequestURL();
-		System.out.println("" + requestUrl);
-		String url = requestUrl.substring(0, requestUrl.lastIndexOf("/")) + "/activation/" + token;
-		System.out.println(url);
-		emailSender.mailSender(user.getEmailId(), env.getProperty("user.email.register"), url);
-	}
 
 	@Override
 	public UserResponse setPassword(SetPasswordDto setPassDto, String token) {

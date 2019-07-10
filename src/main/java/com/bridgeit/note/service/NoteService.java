@@ -405,6 +405,7 @@ public class NoteService implements NoteServiceInterface {
 		} else {
 			Note note = noteRepository.findByNoteId(noteId).get();
 			Label label = labelRepository.findByLabelId(labelId).get();
+			
 			Set<Label> setLabel = new HashSet<Label>();
 			setLabel = note.getLabels();
 			if (setLabel.stream().filter(l -> l.getLabelId() == label.getLabelId()).findFirst().isPresent()) {
