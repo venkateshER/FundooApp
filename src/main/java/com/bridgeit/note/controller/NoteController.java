@@ -47,6 +47,13 @@ public class NoteController {
 		Response response = noteService.reminder(reminderDto, token, id);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
+	
+	@GetMapping("/noCol")
+	public int col(@RequestParam long noteId)
+	{
+		int l=noteService.number(noteId);
+		return l;
+	}
 	@DeleteMapping("/unReminder")
 	public ResponseEntity<Response> unreminder(@RequestHeader String token,@RequestParam long id) {
 		Response response = noteService.unreminder(token, id);

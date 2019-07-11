@@ -11,7 +11,7 @@ import com.bridgeit.user.model.User;
 @Repository
 public interface UserRepositoryInterface extends JpaRepository<User, Long> {
 	Optional<User> findByEmailId(String email);
-	Optional<User> findByNotes(long id);
+//	Optional<User> findByNotes(long id);
 	//Optional<User>findByCollaboNotesAndUserId(long noteId,long userId);
 //	void save(Optional<User> user);
 //

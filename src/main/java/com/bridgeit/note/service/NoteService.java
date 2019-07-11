@@ -330,6 +330,13 @@ public class NoteService implements NoteServiceInterface {
 
 	}
 
+	public int number(long noteId) {
+		
+		Note note=noteRepository.findById(noteId).get();
+		int col=note.getCollaboratedUsers().size();
+		return col;
+	}
+	
 	public Response addCollaborator(long noteId, String token, String emailId) {
 		long uid = TokenUtil.verifyToken(token);
 		boolean isuser = userRepository.findById(uid).isPresent();
@@ -395,7 +402,6 @@ public class NoteService implements NoteServiceInterface {
 	@Override
 	public Response addLabels(long noteId, String token, long labelId) {
 		long uid = TokenUtil.verifyToken(token);
-		User user = userRepository.findById(uid).get();
 		boolean isuser = userRepository.findById(uid).isPresent();
 		boolean isnote = noteRepository.findByNoteId(noteId).isPresent();
 		boolean isLabel = labelRepository.findByLabelId(labelId).isPresent();
@@ -424,7 +430,6 @@ public class NoteService implements NoteServiceInterface {
 	@Override
 	public Response removeLabels(long noteId, String token, long labelId) {
 		long uid = TokenUtil.verifyToken(token);
-		User user = userRepository.findById(uid).get();
 		boolean isuser = userRepository.findById(uid).isPresent();
 		boolean isnote = noteRepository.findByNoteId(noteId).isPresent();
 		boolean isLabel = labelRepository.findByLabelId(labelId).isPresent();

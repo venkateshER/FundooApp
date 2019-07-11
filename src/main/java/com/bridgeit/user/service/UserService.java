@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -43,6 +44,9 @@ public class UserService implements UserServiceInterface {
 	@Autowired
 	private RedisTemplate<String, Object> redis;
 
+	@Value("${amazonProperties.bucketName}")
+	private String bucketName;
+	
 	private static final String KEY = "user";
 	
 	@Override
@@ -60,6 +64,8 @@ public class UserService implements UserServiceInterface {
 			user.setToken(token);
 			user.setRegisterStamp(Utility.todayDate());
 			user.setUpdateStamp(Utility.todayDate());
+			String fileUrl = "https://"+bucketName + ".s3.ap-south-1.amazonaws.com/" + "1562847866535-default.jpg";
+			user.setImage(fileUrl);
 			userRepository.save(user);
 			registerActivationMail(user);
 			UserResponse response = UserResponseUtil.getResponse(200, token, env.getProperty("user.register.success"));
